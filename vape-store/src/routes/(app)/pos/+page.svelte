@@ -194,12 +194,20 @@
 				})
 			});
 
-			const resData = await res.json();
 			if (!res.ok) {
-				showToast(resData.error || 'Transaksi gagal diproses', 'error');
+				let errorMsg = 'Transaksi gagal diproses';
+				try {
+					const errData = await res.json();
+					if (errData?.error) errorMsg = errData.error;
+				} catch {
+					errorMsg = `Koneksi Server Terputus (${res.status} ${res.statusText || 'Gateway Error'}). Pastikan server lokal tetap aktif!`;
+				}
+				showToast(errorMsg, 'error');
 				isProcessing = false;
 				return;
 			}
+
+			const resData = await res.json();
 
 			// Deduct local product stock immediately
 			for (const cartItem of cart) {

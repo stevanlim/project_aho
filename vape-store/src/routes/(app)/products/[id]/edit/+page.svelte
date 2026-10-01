@@ -79,10 +79,17 @@
 				method: 'POST',
 				body: formData
 			});
-			const resData = await res.json();
 			if (!res.ok) {
-				showToast(resData.error || 'Gagal mengunggah foto', 'error');
+				let errorMsg = 'Gagal mengunggah foto';
+				try {
+					const errData = await res.json();
+					if (errData?.error) errorMsg = errData.error;
+				} catch {
+					errorMsg = `Server/Ngrok bermasalah (${res.status} ${res.statusText || 'Error'})`;
+				}
+				showToast(errorMsg, 'error');
 			} else {
+				const resData = await res.json();
 				photoUrl = resData.url;
 				showToast('Foto berhasil ditempel & diunggah!', 'success');
 			}

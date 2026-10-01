@@ -14,7 +14,7 @@ echo (Tekan Ctrl + C di jendela ini untuk mematikan tunnel)
 echo ========================================================
 echo.
 
-ngrok http 5173
+ngrok http 127.0.0.1:5173
 
 if %errorlevel% neq 0 (
     echo.

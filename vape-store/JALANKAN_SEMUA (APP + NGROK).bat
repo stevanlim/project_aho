@@ -16,7 +16,7 @@ timeout /t 3 /nobreak > nul
 
 echo.
 echo 2. Membuka Ngrok Online Tunnel di jendela terpisah...
-start "SS VAPE - Ngrok Online" cmd /k "cd /d ""%~dp0"" && title SS VAPE - Ngrok Tunnel && ngrok http 5173"
+start "SS VAPE - Ngrok Online" cmd /k "cd /d ""%~dp0"" && title SS VAPE - Ngrok Tunnel && ngrok http 127.0.0.1:5173"
 
 echo.
 echo ========================================================
