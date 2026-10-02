@@ -1,7 +1,9 @@
 <script lang="ts">
 	import Header from '$lib/components/layout/Header.svelte';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
+	import { showToast } from '$lib/components/ui/Toast.svelte';
+	import { playSuccessSound } from '$lib/utils/sound.js';
 	import {
 		Receipt,
 		Search,
@@ -11,7 +13,11 @@
 		ChevronLeft,
 		ChevronRight,
 		Eye,
-		ShoppingCart
+		ShoppingCart,
+		Trash2,
+		AlertTriangle,
+		Loader2,
+		X
 	} from 'lucide-svelte';
 
 	let { data } = $props();
@@ -21,6 +27,41 @@
 	let startDate = $state(data.filters.startDate);
 	let endDate = $state(data.filters.endDate);
 	let selectedMethod = $state(data.filters.paymentMethod);
+
+	// State for deleting mistaken transactions
+	let saleToDelete = $state<any | null>(null);
+	let isDeleting = $state(false);
+
+	function confirmDeleteSale(sale: any) {
+		saleToDelete = sale;
+	}
+
+	async function handleDeleteConfirmed() {
+		if (!saleToDelete || isDeleting) return;
+		isDeleting = true;
+
+		try {
+			const res = await fetch(`/api/sales/${saleToDelete.id}`, {
+				method: 'DELETE'
+			});
+			const result = await res.json();
+
+			if (!res.ok || result.error) {
+				throw new Error(result.error || 'Gagal menghapus transaksi.');
+			}
+
+			showToast(result.message || `Transaksi ${saleToDelete.invoice_number} berhasil dihapus & stok dikembalikan!`, 'success');
+			playSuccessSound();
+
+			saleToDelete = null;
+			await invalidateAll();
+		} catch (err: any) {
+			console.error('Delete error:', err);
+			showToast(err.message || 'Gagal menghapus transaksi.', 'error');
+		} finally {
+			isDeleting = false;
+		}
+	}
 
 	function formatRupiah(amount: number) {
 		return new Intl.NumberFormat('id-ID', {
@@ -260,14 +301,25 @@
 									{sale.created_by}
 								</td>
 								<td class="py-3 px-4 text-center">
-									<a
-										href="/transactions/{sale.id}"
-										class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition"
-										title="Lihat & Cetak Invoice"
-									>
-										<Eye class="w-3.5 h-3.5 text-emerald-400" />
-										<span>Detail</span>
-									</a>
+									<div class="flex items-center justify-center gap-1.5">
+										<a
+											href="/transactions/{sale.id}"
+											class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition"
+											title="Lihat & Cetak Invoice"
+										>
+											<Eye class="w-3.5 h-3.5 text-emerald-400" />
+											<span>Detail</span>
+										</a>
+										<button
+											type="button"
+											onclick={() => confirmDeleteSale(sale)}
+											class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 text-xs font-semibold border border-rose-500/30 transition cursor-pointer"
+											title="Hapus Transaksi (Salah Input)"
+										>
+											<Trash2 class="w-3.5 h-3.5 text-rose-400" />
+											<span>Hapus</span>
+										</button>
+									</div>
 								</td>
 							</tr>
 						{/each}
@@ -303,3 +355,97 @@
 		{/if}
 	</div>
 </div>
+
+<!-- MODAL KONFIRMASI HAPUS TRANSAKSI (SALAH INPUT) -->
+{#if saleToDelete}
+	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<div class="fixed inset-0" onclick={() => !isDeleting && (saleToDelete = null)}></div>
+
+		<div class="relative w-full max-w-md bg-[#0c1220] border border-rose-500/40 rounded-2xl shadow-2xl p-6 z-10 space-y-4 animate-scale-up">
+			<!-- Header Modal -->
+			<div class="flex items-start justify-between">
+				<div class="flex items-center gap-3">
+					<div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0">
+						<AlertTriangle class="w-5 h-5" />
+					</div>
+					<div>
+						<h3 class="text-base font-bold text-white">Hapus Transaksi</h3>
+						<p class="text-xs text-rose-400 font-medium">Koreksi Transaksi Salah Input</p>
+					</div>
+				</div>
+				<button
+					type="button"
+					disabled={isDeleting}
+					onclick={() => (saleToDelete = null)}
+					class="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+				>
+					<X class="w-5 h-5" />
+				</button>
+			</div>
+
+			<!-- Detail Transaksi yang akan dihapus -->
+			<div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 space-y-2 text-xs">
+				<div class="flex justify-between items-center pb-2 border-b border-slate-800/80">
+					<span class="text-slate-400">Nomor Invoice:</span>
+					<span class="font-mono font-bold text-emerald-400">{saleToDelete.invoice_number}</span>
+				</div>
+				<div class="flex justify-between items-center">
+					<span class="text-slate-400">Total Belanja:</span>
+					<span class="font-mono font-bold text-white text-sm">{formatRupiah(saleToDelete.grand_total)}</span>
+				</div>
+				<div class="flex justify-between items-center">
+					<span class="text-slate-400">Jumlah Jenis Item:</span>
+					<span class="text-slate-200 font-semibold">{saleToDelete.item_count} jenis</span>
+				</div>
+				<div class="flex justify-between items-center">
+					<span class="text-slate-400">Metode Pembayaran:</span>
+					<span class="px-2 py-0.5 rounded bg-slate-800 text-cyan-300 font-bold uppercase text-[10px]">{saleToDelete.payment_method}</span>
+				</div>
+				<div class="flex justify-between items-center">
+					<span class="text-slate-400">Waktu Transaksi:</span>
+					<span class="text-slate-300 font-mono text-[11px]">{formatDateTime(saleToDelete.created_at)}</span>
+				</div>
+			</div>
+
+			<!-- Keterangan Otomatisasi Stok -->
+			<div class="bg-rose-950/20 border border-rose-500/30 rounded-xl p-3 text-xs text-rose-200/90 space-y-1">
+				<p class="font-bold flex items-center gap-1.5 text-rose-300">
+					<AlertTriangle class="w-4 h-4 text-rose-400 shrink-0" />
+					Perhatian Pengembalian Stok:
+				</p>
+				<p class="text-[11px] leading-relaxed text-slate-300">
+					Semua barang yang terjual pada transaksi ini akan <strong>secara otomatis dikembalikan ke stok toko</strong>, dan pencatatan pendapatan invoice ini akan dibatalkan secara bersih.
+				</p>
+			</div>
+
+			<!-- Tombol Aksi -->
+			<div class="flex items-center justify-end gap-3 pt-2">
+				<button
+					type="button"
+					disabled={isDeleting}
+					onclick={() => (saleToDelete = null)}
+					class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition cursor-pointer"
+				>
+					Batal
+				</button>
+				<button
+					type="button"
+					disabled={isDeleting}
+					onclick={handleDeleteConfirmed}
+					class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-white text-xs font-bold shadow-lg shadow-rose-600/30 transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
+				>
+					{#if isDeleting}
+						<Loader2 class="w-4 h-4 animate-spin" />
+						<span>Menghapus...</span>
+					{:else}
+						<Trash2 class="w-4 h-4" />
+						<span>Ya, Hapus & Kembalikan Stok</span>
+					{/if}
+				</button>
+			</div>
+		</div>
+	</div>
+{/if}
+

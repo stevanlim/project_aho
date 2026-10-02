@@ -24,18 +24,18 @@
 	}
 </script>
 
-<header class="h-16 border-b border-slate-800/80 bg-[#0c1220]/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between sticky top-0 z-20 no-print gap-3">
+<header class="h-16 border-b border-slate-800/80 bg-[#0c1220]/90 backdrop-blur-md px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30 no-print gap-3">
 	<!-- Left: Mobile/Tablet Hamburger & Title -->
-	<div class="flex items-center gap-3 sm:gap-4 min-w-0">
+	<div class="flex items-center gap-2.5 sm:gap-4 min-w-0">
 		<!-- Hamburger Menu Button (Visible on screens < lg) -->
 		<button
 			type="button"
 			onclick={toggleMobileSidebar}
-			class="lg:hidden p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/80 transition border border-slate-700/60 shrink-0 cursor-pointer"
+			class="lg:hidden p-2.5 rounded-xl text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 active:scale-95 transition border border-slate-700/80 shrink-0 cursor-pointer touch-manipulation relative z-30 flex items-center justify-center shadow-sm"
 			aria-label="Buka menu navigasi"
 			title="Buka Menu Navigasi"
 		>
-			<Menu class="w-5 h-5" />
+			<Menu class="w-5 h-5 text-emerald-400" />
 		</button>
 
 		<h1 class="text-base sm:text-lg font-extrabold text-white tracking-wide truncate">

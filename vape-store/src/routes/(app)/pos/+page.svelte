@@ -377,7 +377,7 @@
 								<!-- Image or Placeholder -->
 								<div class="w-full aspect-square rounded-lg bg-slate-900 overflow-hidden mb-2 flex items-center justify-center relative border border-slate-800">
 									{#if prod.photo}
-										<img src={prod.photo} alt={prod.name} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+										<img src={prod.photo} alt={prod.name} loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
 									{:else}
 										<Package class="w-7 h-7 sm:w-8 sm:h-8 text-slate-600" />
 									{/if}

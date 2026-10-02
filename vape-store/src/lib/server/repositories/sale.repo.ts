@@ -233,6 +233,81 @@ export const SaleRepo = {
     return sale;
   },
 
+  async deleteSale(id: number, deletedBy = 'admin_vape'): Promise<{ success: boolean; invoiceNumber: string; restoredItemsCount: number }> {
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+
+      // 1. Get sale details
+      const [sales] = await connection.query<RowDataPacket[]>(
+        'SELECT * FROM sales WHERE id = ? FOR UPDATE',
+        [id]
+      );
+
+      if (sales.length === 0) {
+        throw new Error(`Transaksi dengan ID #${id} tidak ditemukan.`);
+      }
+
+      const sale = sales[0];
+      const invoiceNumber = sale.invoice_number;
+
+      // 2. Get all items in this sale
+      const [items] = await connection.query<RowDataPacket[]>(
+        'SELECT * FROM sale_items WHERE sale_id = ? FOR UPDATE',
+        [id]
+      );
+
+      // 3. Restore stock for each item
+      for (const item of items) {
+        await connection.execute(
+          'UPDATE products SET stock = stock + ? WHERE id = ?',
+          [item.quantity, item.product_id]
+        );
+      }
+
+      // 4. Remove stock mutation records for this sale
+      await connection.execute(
+        'DELETE FROM stock_mutations WHERE reference_type = ? AND reference_id = ?',
+        ['sale', invoiceNumber]
+      );
+
+      // 5. Delete sale items
+      await connection.execute(
+        'DELETE FROM sale_items WHERE sale_id = ?',
+        [id]
+      );
+
+      // 6. Delete sale
+      await connection.execute(
+        'DELETE FROM sales WHERE id = ?',
+        [id]
+      );
+
+      // 7. Record audit log
+      const itemsSummary = items.map((it: any) => `${it.quantity}x ${it.product_name}`).join(', ');
+      await connection.execute(
+        `INSERT INTO audit_logs (action, details, created_by, created_at) VALUES (?, ?, ?, NOW())`,
+        [
+          'SALE_DELETED',
+          `Hapus transaksi salah input: ${invoiceNumber} (Total: Rp ${Number(sale.grand_total).toLocaleString('id-ID')}). Stok dikembalikan: [${itemsSummary}].`,
+          deletedBy
+        ]
+      );
+
+      await connection.commit();
+      return {
+        success: true,
+        invoiceNumber,
+        restoredItemsCount: items.length
+      };
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
+  },
+
   async list(filter: SaleFilter = {}): Promise<{ sales: (Sale & { item_count: number })[]; total: number }> {
     const conditions: string[] = [];
     const params: (string | number)[] = [];

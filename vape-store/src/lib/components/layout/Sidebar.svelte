@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { isMobileSidebarOpen, closeMobileSidebar } from '$lib/utils/nav.js';
+	import { mobileNav, closeMobileSidebar } from '$lib/utils/nav.js';
 	import {
 		LayoutDashboard,
 		Package,
@@ -32,6 +32,13 @@
 
 	const currentPath = $derived(page.url.pathname);
 
+	// Auto-close sidebar on route navigation
+	$effect(() => {
+		if (currentPath) {
+			closeMobileSidebar();
+		}
+	});
+
 	function isActive(path: string, exact = false) {
 		if (exact) return currentPath === path;
 		return currentPath === path || currentPath.startsWith(path + '/');
@@ -39,17 +46,17 @@
 </script>
 
 <!-- Mobile & Tablet Backdrop Overlay -->
-{#if $isMobileSidebarOpen}
+{#if mobileNav.isOpen}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
-		class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
+		class="fixed inset-0 bg-black/75 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
 		onclick={closeMobileSidebar}
 	></div>
 {/if}
 
 <aside
-	class="w-64 bg-[#0c1220] border-r border-slate-800/80 flex flex-col h-screen shrink-0 select-none z-50 fixed lg:sticky top-0 left-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none {$isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}"
+	class="w-64 bg-[#0c1220] border-r border-slate-800/80 flex flex-col h-screen shrink-0 select-none z-50 fixed lg:sticky top-0 left-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none {mobileNav.isOpen ? 'mobile-nav-visible' : 'mobile-nav-hidden'}"
 >
 	<!-- Branding Header -->
 	<div class="h-16 flex items-center justify-between px-5 border-b border-slate-800/80 gap-3">
@@ -68,7 +75,7 @@
 		<!-- Mobile Close Button -->
 		<button
 			type="button"
-			class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition cursor-pointer"
+			class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 active:scale-95 transition cursor-pointer touch-manipulation"
 			onclick={closeMobileSidebar}
 			aria-label="Tutup menu sidebar"
 		>

@@ -54,3 +54,31 @@ export const load: PageServerLoad = async ({ url }) => {
     filters: { search, preset: filterPreset, startDate, endDate, paymentMethod }
   };
 };
+
+export const actions = {
+  delete: async ({ request, locals }) => {
+    if (!locals.user) {
+      return { success: false, error: 'Unauthorized. Silakan login terlebih dahulu.' };
+    }
+
+    const data = await request.formData();
+    const id = parseInt(data.get('id') as string, 10);
+
+    if (!id || isNaN(id)) {
+      return { success: false, error: 'ID transaksi tidak valid.' };
+    }
+
+    try {
+      const operator = locals.user.name || locals.user.username || 'admin_vape';
+      const result = await SaleRepo.deleteSale(id, operator);
+      return {
+        ...result,
+        message: `Transaksi ${result.invoiceNumber} berhasil dihapus dan stok barang dikembalikan.`
+      };
+    } catch (err: any) {
+      console.error('Delete transaction error:', err);
+      return { success: false, error: err.message || 'Gagal menghapus transaksi.' };
+    }
+  }
+};
+

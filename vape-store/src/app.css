@@ -70,3 +70,27 @@
     color: #000000 !important;
   }
 }
+
+/* Mobile & Tablet Sidebar Navigation Drawer */
+@media (max-width: 1023px) {
+  .mobile-nav-hidden {
+    transform: translateX(-100%) !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+  }
+  .mobile-nav-visible {
+    transform: translateX(0) !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mobile-nav-hidden,
+  .mobile-nav-visible {
+    transform: none !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+  }
+}
+

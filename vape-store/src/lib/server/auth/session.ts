@@ -4,6 +4,14 @@ import { UserRepo, type SessionRow } from '../repositories/user.repo.js';
 export const SESSION_COOKIE_NAME = 'ss_vape_session';
 export const PENDING_COOKIE_NAME = 'ss_vape_pending';
 
+// Fast in-memory session cache (TTL 30 seconds) to prevent redundant DB roundtrips on every request
+interface CachedSession {
+  session: SessionRow | null;
+  expires: number;
+}
+const sessionCache = new Map<string, CachedSession>();
+const CACHE_TTL_MS = 30 * 1000;
+
 export const AuthService = {
   async verifyStep1(username: string, password: string): Promise<{ success: boolean; userId?: number; error?: string }> {
     if (!username || !password) {
@@ -45,11 +53,21 @@ export const AuthService = {
 
   async validateSession(sessionId: string): Promise<SessionRow | null> {
     if (!sessionId) return null;
-    return await UserRepo.getSession(sessionId);
+
+    const now = Date.now();
+    const cached = sessionCache.get(sessionId);
+    if (cached && cached.expires > now) {
+      return cached.session;
+    }
+
+    const session = await UserRepo.getSession(sessionId);
+    sessionCache.set(sessionId, { session, expires: now + CACHE_TTL_MS });
+    return session;
   },
 
   async destroySession(sessionId: string): Promise<void> {
     if (sessionId) {
+      sessionCache.delete(sessionId);
       await UserRepo.deleteSession(sessionId);
     }
   }
