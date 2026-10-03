@@ -1,0 +1,43 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  class="bg-slate-950">
+
+  <ActionBar title="Mutasi Stok" class="bg-slate-900">
+    <NavigationButton text="" tap="onGoBack" android.systemIcon="ic_menu_back" />
+  </ActionBar>
+
+  <GridLayout rows="auto, *">
+    <!-- Filter -->
+    <ScrollView row="0" orientation="horizontal" scrollBarIndicatorVisible="false" class="p-4">
+      <StackLayout orientation="horizontal">
+        <Label text="Semua" tap="onTypeAll" class="{{ typeFilter === 'all' ? 'pill active' : 'pill' }}" />
+        <Label text="Masuk" tap="onTypeIn" class="{{ typeFilter === 'IN' ? 'pill active' : 'pill' }}" />
+        <Label text="Keluar" tap="onTypeOut" class="{{ typeFilter === 'OUT' ? 'pill active' : 'pill' }}" />
+        <Label text="Koreksi" tap="onTypeAdj" class="{{ typeFilter === 'ADJUSTMENT' ? 'pill active' : 'pill' }}" />
+      </StackLayout>
+    </ScrollView>
+
+    <ListView row="1" items="{{ mutations }}">
+      <ListView.itemTemplate>
+        <GridLayout columns="auto, *, auto" rows="auto" class="card-sm m-1 p-3" style="margin-left: 16; margin-right: 16;">
+          <GridLayout col="0" rows="*" columns="*"
+            style="width: 36; height: 36; border-radius: 8; background-color: #1e293b;"
+            verticalAlignment="center" horizontalAlignment="center">
+            <Label row="0" col="0" text="{{ typeIcon }}" horizontalAlignment="center" verticalAlignment="middle" textAlignment="center"
+              style="font-size: 11; font-weight: 800; color: #f8fafc;" />
+          </GridLayout>
+          <StackLayout col="1" class="ml-2">
+            <Label text="{{ product_name }}" class="text-sm font-bold text-primary" textWrap="true" maxLines="1" />
+            <Label text="{{ note }}" class="text-xs text-muted" textWrap="true" maxLines="1" />
+            <Label text="{{ formattedDate }}" class="text-xs text-secondary" />
+          </StackLayout>
+          <StackLayout col="2" horizontalAlignment="right" verticalAlignment="center">
+            <Label text="{{ quantityLabel }}" class="{{ quantityClass }}" />
+          </StackLayout>
+        </GridLayout>
+      </ListView.itemTemplate>
+    </ListView>
+
+    <ActivityIndicator row="1" busy="{{ isLoading }}" visibility="{{ isLoading ? 'visible' : 'collapsed' }}" />
+  </GridLayout>
+</Page>

@@ -1,0 +1,61 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  actionBarHidden="true"
+  class="bg-slate-950">
+
+  <GridLayout rows="auto, auto, *">
+    <!-- Header -->
+    <GridLayout row="0" columns="*, auto" class="p-4" rows="auto">
+      <StackLayout col="0">
+        <Label text="Inventori Produk" class="text-xl font-bold text-primary" />
+        <Label text="{{ totalProducts + ' produk' }}" class="text-xs text-secondary mt-1" />
+      </StackLayout>
+      <Button col="1" text="+ Tambah" tap="onAddProduct" class="btn btn-emerald btn-sm" />
+    </GridLayout>
+
+    <!-- Search & Filters -->
+    <StackLayout row="1" class="p-4" style="padding-top: 0;">
+      <TextField hint="Cari nama atau SKU..." text="{{ searchQuery }}" class="input-dark mb-2"
+        returnKeyType="search" autocorrect="false" />
+      <ScrollView orientation="horizontal" scrollBarIndicatorVisible="false">
+        <StackLayout orientation="horizontal">
+          <Label text="Semua" tap="onFilterAll" className="{{ filterAllClass }}" />
+          <Label text="Device" tap="onFilterDevice" className="{{ filterDeviceClass }}" />
+          <Label text="Liquid" tap="onFilterLiquid" className="{{ filterLiquidClass }}" />
+          <Label text="Coil" tap="onFilterCoil" className="{{ filterCoilClass }}" />
+          <Label text="Cartridge" tap="onFilterCatridge" className="{{ filterCartridgeClass }}" />
+          <Label text="Lainnya" tap="onFilterOther" className="{{ filterOtherClass }}" />
+        </StackLayout>
+      </ScrollView>
+    </StackLayout>
+
+    <!-- Product List -->
+    <ListView row="2" items="{{ products }}" itemTap="onProductTap">
+      <ListView.itemTemplate>
+        <GridLayout columns="56, *, auto" rows="auto" class="card-sm m-1 p-3" style="margin-left: 16; margin-right: 16;">
+          <!-- Photo -->
+          <Image col="0" src="{{ photoUrl }}" class="product-image-sm" stretch="aspectFill" loadMode="async" />
+
+          <!-- Info -->
+          <StackLayout col="1" class="ml-2">
+            <Label text="{{ name }}" class="text-sm font-bold text-primary" textWrap="true" maxLines="1" />
+            <Label text="{{ sku }}" class="text-xs text-muted" />
+            <GridLayout columns="auto, auto" rows="auto" class="mt-1">
+              <Label col="0" text="{{ categoryLabel }}" class="badge badge-cyan" />
+              <Label col="1" text="{{ statusLabel }}" class="{{ statusBadgeClass }}" style="margin-left: 4;" />
+            </GridLayout>
+          </StackLayout>
+
+          <!-- Price & Stock -->
+          <StackLayout col="2" horizontalAlignment="right">
+            <Label text="{{ formattedPrice }}" class="text-sm font-bold text-emerald text-right" />
+            <Label text="{{ 'Stok: ' + stock + ' ' + unit }}" class="{{ stockClass + ' text-right' }}" />
+          </StackLayout>
+        </GridLayout>
+      </ListView.itemTemplate>
+    </ListView>
+
+    <!-- Loading -->
+    <ActivityIndicator row="2" busy="{{ isLoading }}" visibility="{{ isLoading ? 'visible' : 'collapsed' }}" />
+  </GridLayout>
+</Page>

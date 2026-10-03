@@ -15,8 +15,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json({ error: 'Keranjang belanja tidak boleh kosong.' }, { status: 400 });
     }
 
+    const mappedItems = items.map((item: any) => ({
+      productId: Number(item.productId ?? item.product_id),
+      quantity: Number(item.quantity)
+    }));
+
     const result = await SaleRepo.processCheckout({
-      items,
+      items: mappedItems,
       discount: Number(discount) || 0,
       paidAmount: Number(paidAmount) || 0,
       paymentMethod: paymentMethod || 'Cash',

@@ -1,0 +1,97 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  actionBarHidden="true"
+  class="bg-slate-950">
+
+  <ScrollView>
+    <StackLayout class="p-4">
+      <!-- User Profile Card with Circular Logo -->
+      <StackLayout class="card p-5 mb-4" horizontalAlignment="center"
+        style="background-color: #0b1120; border-width: 1.5; border-color: #1e293b; border-radius: 20; width: 100%;">
+        <StackLayout horizontalAlignment="center" verticalAlignment="center" class="mb-2"
+          style="width: 76; height: 76; border-radius: 38; background-color: #0d1527; border-width: 2; border-color: #00f0ff; padding: 4;">
+          <Image src="~/assets/logo.png" width="64" height="64" stretch="aspectFit" style="border-radius: 32;" />
+        </StackLayout>
+        <Label text="SS VAPE" class="text-center text-xl font-extrabold text-cyan mt-1" style="color: #00f0ff;" />
+        <Label text="{{ userName }}" class="text-center text-base font-bold text-primary mt-1" />
+        <Label text="{{ userRole }}" class="text-center text-xs text-secondary mt-0.5" />
+      </StackLayout>
+
+      <!-- Menu Items -->
+      <Label text="MANAJEMEN STOK" class="text-xs font-bold text-secondary mb-2 ml-1" />
+
+      <!-- Stock In -->
+      <GridLayout columns="auto, *, auto" class="card-sm p-3 mb-2" tap="onStockIn" rows="auto"
+        style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 14;">
+        <GridLayout col="0" rows="*" columns="*"
+          style="width: 40; height: 40; border-radius: 10; background-color: rgba(0, 255, 135, 0.12); border-width: 1.5; border-color: #00ff87;"
+          verticalAlignment="center" horizontalAlignment="center">
+          <Label row="0" col="0" text="+" horizontalAlignment="center" verticalAlignment="middle" textAlignment="center"
+            style="font-size: 22; font-weight: 900; color: #00ff87;" />
+        </GridLayout>
+        <StackLayout col="1" style="margin-left: 14;" verticalAlignment="center">
+          <Label text="Stok Masuk" class="text-sm font-bold text-primary" />
+          <Label text="Tambahkan stok barang baru" class="text-xs text-secondary mt-0.5" />
+        </StackLayout>
+        <Label col="2" text="→" class="text-secondary text-base" verticalAlignment="center" />
+      </GridLayout>
+
+      <!-- Stock Mutations -->
+      <GridLayout columns="auto, *, auto" class="card-sm p-3 mb-2" tap="onStockMutations" rows="auto"
+        style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 14;">
+        <GridLayout col="0" rows="*" columns="*"
+          style="width: 40; height: 40; border-radius: 10; background-color: rgba(0, 240, 255, 0.12); border-width: 1.5; border-color: #00f0ff;"
+          verticalAlignment="center" horizontalAlignment="center">
+          <Label row="0" col="0" text="LOG" horizontalAlignment="center" verticalAlignment="middle" textAlignment="center"
+            style="font-size: 11; font-weight: 900; color: #00f0ff;" />
+        </GridLayout>
+        <StackLayout col="1" style="margin-left: 14;" verticalAlignment="center">
+          <Label text="Mutasi Stok" class="text-sm font-bold text-primary" />
+          <Label text="Riwayat keluar masuk barang" class="text-xs text-secondary mt-0.5" />
+        </StackLayout>
+        <Label col="2" text="→" class="text-secondary text-base" verticalAlignment="center" />
+      </GridLayout>
+
+      <!-- Stock Alerts -->
+      <GridLayout columns="auto, *, auto" class="card-sm p-3 mb-4" tap="onStockAlerts" rows="auto"
+        style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 14;">
+        <GridLayout col="0" rows="*" columns="*"
+          style="width: 40; height: 40; border-radius: 10; background-color: rgba(251, 191, 36, 0.12); border-width: 1.5; border-color: #fbbf24;"
+          verticalAlignment="center" horizontalAlignment="center">
+          <Label row="0" col="0" text="ALERT" horizontalAlignment="center" verticalAlignment="middle" textAlignment="center"
+            style="font-size: 10; font-weight: 900; color: #fbbf24;" />
+        </GridLayout>
+        <StackLayout col="1" style="margin-left: 14;" verticalAlignment="center">
+          <Label text="Peringatan Stok" class="text-sm font-bold text-primary" />
+          <Label text="Produk yang stoknya menipis" class="text-xs text-secondary mt-0.5" />
+        </StackLayout>
+        <Label col="2" text="→" class="text-secondary text-base" verticalAlignment="center" />
+      </GridLayout>
+
+      <!-- Settings -->
+      <Label text="PENGATURAN &amp; SISTEM" class="text-xs font-bold text-secondary mb-2 ml-1" />
+
+      <GridLayout columns="auto, *, auto" class="card-sm p-3 mb-4" tap="onSettings" rows="auto"
+        style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 14;">
+        <GridLayout col="0" rows="*" columns="*"
+          style="width: 40; height: 40; border-radius: 10; background-color: rgba(192, 132, 252, 0.12); border-width: 1.5; border-color: #c084fc;"
+          verticalAlignment="center" horizontalAlignment="center">
+          <Label row="0" col="0" text="SET" horizontalAlignment="center" verticalAlignment="middle" textAlignment="center"
+            style="font-size: 11; font-weight: 900; color: #c084fc;" />
+        </GridLayout>
+        <StackLayout col="1" style="margin-left: 14;" verticalAlignment="center">
+          <Label text="Pengaturan Toko" class="text-sm font-bold text-primary" />
+          <Label text="Nama toko, alamat, telepon, dan batas stok" class="text-xs text-secondary mt-0.5" />
+        </StackLayout>
+        <Label col="2" text="→" class="text-secondary text-base" verticalAlignment="center" />
+      </GridLayout>
+
+      <!-- Logout Button with Neon Red Style -->
+      <Button text="Keluar Akun (Logout)" tap="onLogout" class="btn btn-rose btn-block mb-3"
+        style="background-color: rgba(244, 63, 94, 0.12); border-width: 1.5; border-color: #f43f5e; color: #ff4d6d; font-size: 14; font-weight: 800; border-radius: 12; padding: 13;" />
+
+      <!-- App Version -->
+      <Label text="SS VAPE Mobile — Cyberpunk Edition" class="text-center text-xxs text-muted mt-2" />
+    </StackLayout>
+  </ScrollView>
+</Page>

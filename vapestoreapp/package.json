@@ -1,0 +1,18 @@
+{
+  "name": "vapestoreapp",
+  "main": "app/app.ts",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@nativescript/android": "^9.1.1",
+    "@nativescript/core": "~9.1.0",
+    "@nativescript/theme": "^3.1.0",
+    "devalue": "^6.0.2"
+  },
+  "devDependencies": {
+    "@nativescript/preview-cli": "1.0.15",
+    "@nativescript/types": "~9.0.0",
+    "@nativescript/webpack": "~5.0.25",
+    "typescript": "~6.0.0"
+  }
+}

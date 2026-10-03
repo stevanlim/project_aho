@@ -1,0 +1,115 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  class="bg-slate-950">
+
+  <ActionBar title="{{ isEdit ? 'Edit Produk' : 'Tambah Produk' }}" class="bg-slate-900">
+    <NavigationButton text="" tap="onGoBack" android.systemIcon="ic_menu_back" />
+  </ActionBar>
+
+  <ScrollView>
+    <StackLayout class="p-4">
+      <!-- Error Message -->
+      <Label text="{{ errorMessage }}" visibility="{{ errorMessage ? 'visible' : 'collapsed' }}"
+        class="text-rose text-sm p-3 bg-rose-dim rounded mb-3" textWrap="true" />
+
+      <!-- 1. Kategori Produk (Card Selection) -->
+      <StackLayout class="mb-4">
+        <Label text="Kategori Produk" class="text-xs font-bold text-secondary mb-2" />
+        <GridLayout columns="*, *, *" rows="auto, auto" class="mb-1">
+          <Label col="0" row="0" text="DEVICE" tap="onCatDevice"
+            class="{{ catDeviceClass }}" textAlignment="center" style="margin: 3;" />
+          <Label col="1" row="0" text="LIQUID" tap="onCatLiquid"
+            class="{{ catLiquidClass }}" textAlignment="center" style="margin: 3;" />
+          <Label col="2" row="0" text="COIL" tap="onCatCoil"
+            class="{{ catCoilClass }}" textAlignment="center" style="margin: 3;" />
+          <Label col="0" row="1" text="CARTRIDGE" tap="onCatCatridge"
+            class="{{ catCartridgeClass }}" textAlignment="center" style="margin: 3;" />
+          <Label col="1" row="1" text="LAINNYA" tap="onCatOther"
+            class="{{ catOtherClass }}" textAlignment="center" style="margin: 3;" />
+        </GridLayout>
+      </StackLayout>
+
+      <!-- 2. Nama Produk -->
+      <StackLayout class="mb-3">
+        <Label text="Nama Produk" class="text-xs font-bold text-secondary mb-1" />
+        <TextField hint="Nama produk lengkap..." text="{{ name }}" class="input-dark"
+          style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 12; padding: 12 14;" />
+      </StackLayout>
+
+      <!-- 3. Prices (Modal & Jual) -->
+      <GridLayout columns="*, *" rows="auto" class="mb-3">
+        <StackLayout col="0" style="margin-right: 4;">
+          <Label text="Harga Modal (Rp)" class="text-xs font-bold text-secondary mb-1" />
+          <TextField hint="0" text="{{ purchasePrice }}" keyboardType="number" class="input-dark"
+            style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 12; padding: 12 14;" />
+        </StackLayout>
+        <StackLayout col="1" style="margin-left: 4;">
+          <Label text="Harga Jual (Rp)" class="text-xs font-bold text-secondary mb-1" />
+          <TextField hint="0" text="{{ sellingPrice }}" keyboardType="number" class="input-dark"
+            style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 12; padding: 12 14;" />
+        </StackLayout>
+      </GridLayout>
+
+      <!-- 4. Stock & Unit -->
+      <GridLayout columns="*, *" rows="auto" class="mb-3">
+        <StackLayout col="0" style="margin-right: 4;">
+          <Label text="Stok Awal" class="text-xs font-bold text-secondary mb-1" />
+          <TextField hint="0" text="{{ stock }}" keyboardType="number" class="input-dark"
+            style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 12; padding: 12 14;" />
+        </StackLayout>
+        <StackLayout col="1" style="margin-left: 4;">
+          <Label text="Satuan" class="text-xs font-bold text-secondary mb-1" />
+          <TextField hint="pcs / botol" text="{{ unit }}" class="input-dark"
+            style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 12; padding: 12 14;" />
+        </StackLayout>
+      </GridLayout>
+
+      <!-- 5. Liquid Specific (Only visible when Liquid is selected) -->
+      <StackLayout visibility="{{ isLiquid ? 'visible' : 'collapsed' }}" class="mb-4"
+        style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 14; padding: 14;">
+        <Label text="Spesifikasi Liquid" class="text-xs font-bold text-cyan mb-2" />
+        <GridLayout columns="*, *" rows="auto" class="mb-3">
+          <Label col="0" text="SALTNIC" tap="onLiquidSaltnic"
+            class="{{ liquidSaltnicClass }}" textAlignment="center" style="margin-right: 4;" />
+          <Label col="1" text="FREEBASE" tap="onLiquidFreebase"
+            class="{{ liquidFreebaseClass }}" textAlignment="center" style="margin-left: 4;" />
+        </GridLayout>
+        <GridLayout columns="*, *" rows="auto">
+          <StackLayout col="0" style="margin-right: 4;">
+            <Label text="Nikotin (mg)" class="text-xs text-secondary mb-1" />
+            <TextField hint="0" text="{{ nicotineMg }}" keyboardType="number" class="input-dark"
+              style="background-color: #060a14; border-width: 1; border-color: #1e293b; border-radius: 10; padding: 10 12;" />
+          </StackLayout>
+          <StackLayout col="1" style="margin-left: 4;">
+            <Label text="Volume (ml)" class="text-xs text-secondary mb-1" />
+            <TextField hint="0" text="{{ volumeMl }}" keyboardType="number" class="input-dark"
+              style="background-color: #060a14; border-width: 1; border-color: #1e293b; border-radius: 10; padding: 10 12;" />
+          </StackLayout>
+        </GridLayout>
+      </StackLayout>
+
+      <!-- 6. Cartridge Specific (Only visible when Cartridge is selected) -->
+      <StackLayout visibility="{{ isCartridge ? 'visible' : 'collapsed' }}" class="mb-4"
+        style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 14; padding: 14;">
+        <Label text="Spesifikasi Cartridge" class="text-xs font-bold text-cyan mb-2" />
+        <Label text="Resistance (Ω)" class="text-xs text-secondary mb-1" />
+        <TextField hint="Contoh: 0.8" text="{{ resistanceOhm }}" class="input-dark"
+          style="background-color: #060a14; border-width: 1; border-color: #1e293b; border-radius: 10; padding: 10 12;" />
+      </StackLayout>
+
+      <!-- 7. Deskripsi (Opsional) -->
+      <StackLayout class="mb-4">
+        <Label text="Deskripsi (Opsional)" class="text-xs font-bold text-secondary mb-1" />
+        <TextView hint="Deskripsi atau catatan produk..." text="{{ description }}" class="input-dark"
+          style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 12; padding: 12 14; height: 90;" />
+      </StackLayout>
+
+      <!-- 8. Submit Button -->
+      <Button text="{{ isSubmitting ? 'Menyimpan...' : (isEdit ? 'Simpan Perubahan' : 'Tambah Produk') }}"
+        tap="onSubmit" isEnabled="{{ !isSubmitting }}"
+        class="btn btn-emerald btn-block btn-lg"
+        style="background-color: #059669; border-width: 1.5; border-color: #00ff87; color: #ffffff; font-size: 16; font-weight: 800; border-radius: 14; padding: 14 20; margin-bottom: 34;" />
+
+    </StackLayout>
+  </ScrollView>
+</Page>

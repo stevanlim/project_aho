@@ -3,7 +3,13 @@ import { redirect } from '@sveltejs/kit';
 import { AuthService, SESSION_COOKIE_NAME } from '$lib/server/auth/session.js';
 
 export const handle: Handle = async ({ event, resolve }) => {
-  const sessionId = event.cookies.get(SESSION_COOKIE_NAME);
+  let sessionId = event.cookies.get(SESSION_COOKIE_NAME);
+  if (!sessionId) {
+    const authHeader = event.request.headers.get('Authorization') || event.request.headers.get('authorization');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      sessionId = authHeader.substring(7).trim();
+    }
+  }
 
   if (sessionId) {
     const session = await AuthService.validateSession(sessionId);
@@ -34,9 +40,9 @@ export const handle: Handle = async ({ event, resolve }) => {
     return resolve(event);
   }
 
-  // Auth routes (/login and /login/pin)
-  if (pathname.startsWith('/login')) {
-    if (event.locals.user) {
+  // Auth routes (/login, /login/pin, and /api/auth)
+  if (pathname.startsWith('/login') || pathname.startsWith('/api/auth')) {
+    if (event.locals.user && pathname.startsWith('/login')) {
       throw redirect(303, event.locals.user.role === 'kasir' ? '/pos' : '/dashboard');
     }
     return resolve(event);

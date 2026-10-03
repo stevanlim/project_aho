@@ -1,0 +1,159 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  actionBarHidden="true"
+  class="bg-slate-950">
+
+  <GridLayout rows="auto, *, auto">
+    <!-- 1. Header (Clean, no duplicate arrows) -->
+    <GridLayout row="0" columns="auto, *, auto" class="p-3 bg-slate-900 border-b border-slate-800" rows="auto">
+      <Button col="0" text="Kembali" tap="onGoBack" class="btn btn-slate btn-sm" style="font-size: 12; border-radius: 8;" />
+      <Label col="1" text="Keranjang Belanja" class="text-base font-bold text-primary text-center" verticalAlignment="center" />
+      <Button col="2" text="Kosongkan" tap="onClearCart" class="btn btn-rose btn-sm"
+        visibility="{{ hasCartItems ? 'visible' : 'collapsed' }}"
+        style="font-size: 11; padding: 4 8; border-radius: 8;" />
+    </GridLayout>
+
+    <!-- 2. Scrollable Body: Items + Rincian + Metode Bayar + Nominal Bayar -->
+    <ScrollView row="1">
+      <StackLayout class="p-3">
+
+        <!-- Cart Items List (Repeater so everything scrolls smoothly) -->
+        <Repeater items="{{ cartItems }}" visibility="{{ hasCartItems ? 'visible' : 'collapsed' }}">
+          <Repeater.itemTemplate>
+            <GridLayout columns="52, *, auto, auto" rows="auto" class="card-sm mb-2 p-2.5"
+              style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 12;">
+              
+              <!-- Product Image -->
+              <Image col="0" src="{{ photoPath }}" stretch="aspectFill"
+                style="width: 50; height: 50; border-radius: 8; background-color: #162032;" loadMode="async" />
+
+              <!-- Product Info -->
+              <StackLayout col="1" class="ml-2.5" verticalAlignment="center">
+                <Label text="{{ product_name }}" class="text-xs font-bold text-primary" textWrap="true" maxLines="2"
+                  style="font-size: 11; font-weight: 700; color: #f8fafc;" />
+                <Label text="{{ formattedUnitPrice }}" class="text-xxs text-secondary mt-0.5" style="font-size: 10; color: #94a3b8;" />
+                <Label text="{{ formattedSubtotal }}" class="text-xs font-extrabold text-emerald mt-0.5" style="font-size: 11; color: #10b981;" />
+              </StackLayout>
+
+              <!-- Quantity Controls (+ / - / direct input) -->
+              <GridLayout col="2" columns="auto, auto, auto" verticalAlignment="center" class="mr-2">
+                <Button col="0" text="−" tap="onDecrement" class="btn btn-slate btn-sm"
+                  style="width: 32; height: 32; padding: 0; font-size: 16; border-radius: 8;" />
+                <TextField col="1" text="{{ quantity }}" textChange="onQuantityInput" keyboardType="number"
+                  class="input-dark text-center"
+                  style="width: 44; height: 32; font-size: 13; font-weight: bold; padding: 0; margin: 0 3; border-radius: 8;" />
+                <Button col="2" text="+" tap="onIncrement" class="btn btn-slate btn-sm"
+                  style="width: 32; height: 32; padding: 0; font-size: 16; border-radius: 8;" />
+              </GridLayout>
+
+              <!-- Remove Item Button -->
+              <Button col="3" text="✕" tap="onRemoveItem" class="btn btn-sm"
+                style="background-color: rgba(244, 63, 94, 0.15); border-width: 1; border-color: #f43f5e; color: #ff4d6d; width: 34; height: 34; padding: 0; font-size: 14; font-weight: bold; border-radius: 8;"
+                verticalAlignment="center" />
+            </GridLayout>
+          </Repeater.itemTemplate>
+        </Repeater>
+
+        <!-- Empty State (No Emoticons, Clean Neon Tech Badge) -->
+        <StackLayout visibility="{{ isEmptyCart ? 'visible' : 'collapsed' }}" class="empty-state p-6 my-8">
+          <Label text="KERANJANG KOSONG" style="font-size: 15; font-weight: 800; color: #00f0ff; text-align: center;" />
+          <Label text="Belum ada produk yang ditambahkan ke keranjang" class="text-xs text-secondary text-center mt-2" />
+          <Button text="Kembali ke Katalog Kasir" tap="onGoBack" class="btn btn-emerald mt-4"
+            style="background-color: #059669; border-width: 1.5; border-color: #00ff87; border-radius: 12; font-weight: 800;" />
+        </StackLayout>
+
+        <!-- Rincian Biaya Belanja Card -->
+        <StackLayout class="card p-3 my-2" visibility="{{ hasCartItems ? 'visible' : 'collapsed' }}"
+          style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 14;">
+          <Label text="Rincian Pembayaran" class="text-xs font-bold text-secondary mb-2" />
+          
+          <GridLayout columns="*, auto" class="mb-1.5">
+            <Label col="0" text="Subtotal" class="text-sm text-secondary" />
+            <Label col="1" text="{{ formattedSubtotal }}" class="text-sm font-bold text-primary" />
+          </GridLayout>
+
+          <GridLayout columns="auto, *" class="mb-1.5" rows="auto">
+            <Label col="0" text="Diskon (Rp):" class="text-sm text-secondary" verticalAlignment="center" />
+            <TextField col="1" hint="0" text="{{ discountInput }}" keyboardType="number" class="input-dark ml-2"
+              style="height: 36; font-size: 13; padding: 2 8; border-radius: 8;" />
+          </GridLayout>
+
+          <StackLayout style="height: 1; background-color: #1e293b; margin: 8 0;" />
+
+          <GridLayout columns="*, auto">
+            <Label col="0" text="Total Tagihan" class="text-sm font-bold text-primary" verticalAlignment="center" />
+            <Label col="1" text="{{ formattedGrandTotal }}" class="text-xl font-extrabold text-emerald" />
+          </GridLayout>
+        </StackLayout>
+
+        <!-- Metode Pembayaran (2x2 Grid: Jelas dan Tidak Terpotong) -->
+        <StackLayout class="card p-3 mb-2" visibility="{{ hasCartItems ? 'visible' : 'collapsed' }}"
+          style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 14;">
+          <Label text="Metode Pembayaran" class="text-xs font-bold text-secondary mb-2" />
+          
+          <GridLayout columns="*, *" rows="auto, auto" class="mb-1">
+            <Button row="0" col="0" text="Tunai / Cash" tap="onPayCash"
+              class="{{ paymentMethod === 'Cash' ? 'btn btn-emerald' : 'btn btn-outline' }}"
+              style="margin: 2; font-size: 12; font-weight: bold; border-radius: 10;" />
+            <Button row="0" col="1" text="QRIS Instant" tap="onPayQRIS"
+              class="{{ paymentMethod === 'QRIS' ? 'btn btn-cyan' : 'btn btn-outline' }}"
+              style="margin: 2; font-size: 12; font-weight: bold; border-radius: 10;" />
+            <Button row="1" col="0" text="Transfer Bank" tap="onPayTransfer"
+              class="{{ paymentMethod === 'Transfer' ? 'btn btn-amber' : 'btn btn-outline' }}"
+              style="margin: 2; font-size: 12; font-weight: bold; border-radius: 10;" />
+            <Button row="1" col="1" text="Pembayaran Lain" tap="onPayOther"
+              class="{{ paymentMethod === 'Other' ? 'btn btn-slate' : 'btn btn-outline' }}"
+              style="margin: 2; font-size: 12; font-weight: bold; border-radius: 10;" />
+          </GridLayout>
+        </StackLayout>
+
+        <!-- Input Uang Tunai dan Quick Cash Chips (Hanya muncul jika Tunai) -->
+        <StackLayout class="card p-3 mb-2" visibility="{{ isCashPayment ? 'visible' : 'collapsed' }}"
+          style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 14;">
+          <Label text="Uang Diterima (Tunai)" class="text-xs font-bold text-secondary mb-1.5" />
+          <TextField hint="Ketik nominal uang diterima..." text="{{ paidAmountInput }}" keyboardType="number"
+            class="input-dark mb-2.5"
+            style="height: 44; font-size: 17; font-weight: 800; padding: 4 12; border-radius: 10; color: #10b981;" />
+
+          <!-- Quick Cash Chips -->
+          <GridLayout columns="*, *, *, *, *" rows="auto" class="mb-2">
+            <Button col="0" text="Uang Pas" tap="onPayExact" class="btn btn-slate btn-sm"
+              style="margin: 1; padding: 6 2; font-size: 10; font-weight: bold; border-radius: 8;" />
+            <Button col="1" text="50rb" tap="onPay50k" class="btn btn-slate btn-sm"
+              style="margin: 1; padding: 6 2; font-size: 10; font-weight: bold; border-radius: 8;" />
+            <Button col="2" text="100rb" tap="onPay100k" class="btn btn-slate btn-sm"
+              style="margin: 1; padding: 6 2; font-size: 10; font-weight: bold; border-radius: 8;" />
+            <Button col="3" text="200rb" tap="onPay200k" class="btn btn-slate btn-sm"
+              style="margin: 1; padding: 6 2; font-size: 10; font-weight: bold; border-radius: 8;" />
+            <Button col="4" text="500rb" tap="onPay500k" class="btn btn-slate btn-sm"
+              style="margin: 1; padding: 6 2; font-size: 10; font-weight: bold; border-radius: 8;" />
+          </GridLayout>
+
+          <!-- Kembalian Display -->
+          <GridLayout columns="*, auto" class="p-2.5" style="background-color: rgba(16, 185, 129, 0.12); border-radius: 10; border-width: 1; border-color: rgba(16, 185, 129, 0.25);">
+            <Label col="0" text="Kembalian:" class="text-xs font-bold text-secondary" verticalAlignment="center" />
+            <Label col="1" text="{{ formattedChange }}" class="text-lg font-extrabold text-emerald" />
+          </GridLayout>
+        </StackLayout>
+
+        <!-- Extra spacing so content is never hidden behind bottom bar -->
+        <StackLayout style="height: 30;" />
+      </StackLayout>
+    </ScrollView>
+
+    <!-- 3. STICKY DOCKED BOTTOM CHECKOUT BAR -->
+    <GridLayout row="2" columns="*, auto" class="p-3 bg-slate-900 border-t border-slate-800"
+      visibility="{{ hasCartItems ? 'visible' : 'collapsed' }}" rows="auto"
+      style="background-color: #0b1120; border-top-width: 1.5; border-top-color: #1e293b;">
+      <StackLayout col="0" verticalAlignment="center" class="pr-2">
+        <Label text="Total Pembayaran" class="text-xxs text-secondary" style="font-size: 10; color: #94a3b8;" />
+        <Label text="{{ formattedGrandTotal }}" class="text-xl font-extrabold" style="font-size: 19; font-weight: 900; color: #00ff87;" />
+      </StackLayout>
+      <Button col="1" text="{{ isProcessing ? 'Memproses...' : 'Selesaikan Pembayaran →' }}"
+        tap="onCheckout" isEnabled="{{ !isProcessing }}"
+        class="btn btn-emerald btn-lg"
+        style="background-color: #059669; border-width: 1.5; border-color: #00ff87; padding: 12 20; font-size: 14; font-weight: 800; border-radius: 12;" />
+    </GridLayout>
+
+  </GridLayout>
+</Page>

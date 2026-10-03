@@ -1,0 +1,64 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  actionBarHidden="true"
+  backgroundSpanUnderStatusBar="true"
+  class="bg-slate-950">
+
+  <GridLayout rows="*" columns="*">
+    <ScrollView row="0" verticalAlignment="center" horizontalAlignment="center" style="width: 100%;">
+      <StackLayout class="p-5" style="max-width: 420; horizontal-alignment: center;">
+        
+        <!-- Top: Circular Logo with Neon Border Ring -->
+        <StackLayout horizontalAlignment="center" verticalAlignment="center" class="mb-2"
+          style="width: 90; height: 90; border-radius: 45; background-color: #0d1527; border-width: 2.5; border-color: #00f0ff; padding: 6;">
+          <Image src="~/assets/logo.png" width="76" height="76" stretch="aspectFit"
+            style="border-radius: 38;" />
+        </StackLayout>
+
+        <Label text="SS VAPE" class="text-center text-3xl font-extrabold text-cyan"
+          style="margin-top: 2; margin-bottom: 2; color: #00f0ff;" />
+        <Label text="Sistem Kasir &amp; Manajemen Toko" class="text-center text-xs text-secondary mb-4" />
+
+        <!-- Center: Login Card with Neon Border -->
+        <StackLayout class="card p-6"
+          style="background-color: #0b1120; border-width: 1.5; border-color: #1e293b; border-radius: 20;">
+          <Label text="MASUK APLIKASI" class="text-center text-sm font-bold text-primary mb-1"
+            style="color: #f8fafc;" />
+          <Label text="Silakan masuk dengan akun kasir atau admin" class="text-center text-xs text-muted mb-4" />
+
+          <!-- Error Message -->
+          <Label text="{{ errorMessage }}" visibility="{{ hasError ? 'visible' : 'collapsed' }}"
+            class="text-rose text-xs text-center mb-3 p-3 bg-rose-dim rounded" textWrap="true"
+            style="border-width: 1; border-color: #f43f5e;" />
+
+          <!-- Username -->
+          <Label text="Username" class="text-xs font-bold text-secondary mb-1" />
+          <TextField id="usernameField" hint="Masukkan username..." text="{{ username }}" autocorrect="false"
+            autocapitalizationType="none" returnKeyType="next" class="input-dark mb-3"
+            style="background-color: #070d19; border-width: 1.5; border-color: #1e293b; border-radius: 12; padding: 12 14; color: #f8fafc;" />
+
+          <!-- Password dengan Toggle yang Tidak Terpotong -->
+          <Label text="Password" class="text-xs font-bold text-secondary mb-1" />
+          <GridLayout columns="*, auto" class="mb-5" rows="auto">
+            <TextField col="0" id="passwordField" hint="Masukkan password..." text="{{ password }}"
+              secure="{{ !isPasswordVisible }}" autocorrect="false" autocapitalizationType="none"
+              returnKeyType="done" class="input-dark"
+              style="background-color: #070d19; border-width: 1.5; border-color: #1e293b; border-radius: 12; padding: 12 14; color: #f8fafc;" />
+            <Label col="1" text="{{ isPasswordVisible ? 'TUTUP' : 'LIHAT' }}" tap="onTogglePassword"
+              textAlignment="center"
+              style="width: 66; height: 46; margin-left: 6; border-radius: 12; border-width: 1.5; border-color: #00f0ff; background-color: rgba(0, 240, 255, 0.12); color: #00f0ff; font-size: 11; font-weight: 800; padding: 14 0;" />
+          </GridLayout>
+
+          <!-- Login Button -->
+          <Button text="{{ buttonText }}" tap="onLogin"
+            isEnabled="{{ !isLoading }}"
+            class="btn btn-emerald btn-block btn-lg"
+            style="background-color: #059669; border-width: 1.5; border-color: #00ff87; color: #ffffff; font-size: 15; font-weight: 800; border-radius: 14; padding: 14;" />
+        </StackLayout>
+
+        <!-- Footer -->
+        <Label text="© 2026 SS VAPE — Point of Sale" class="text-center text-xs text-muted mt-5" />
+      </StackLayout>
+    </ScrollView>
+  </GridLayout>
+</Page>

@@ -1,0 +1,160 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  actionBarHidden="true"
+  class="bg-slate-950">
+
+  <!-- Master-Detail Split Screen Layout for Tablet -->
+  <GridLayout columns="62*, 38*">
+
+    <!-- LEFT COLUMN: Product Catalog (Master) -->
+    <GridLayout col="0" rows="auto, auto, auto, *" class="p-3">
+      <!-- Header -->
+      <GridLayout row="0" columns="*, auto" class="mb-2" rows="auto">
+        <StackLayout col="0">
+          <Label text="SS VAPE — Kasir Tablet" class="text-xl font-bold text-primary" />
+          <Label text="{{ productCount + ' produk aktif siap jual' }}" class="text-xs text-secondary mt-1" />
+        </StackLayout>
+        <Button col="1" text="Refresh" tap="onRefresh" class="btn btn-slate btn-sm" />
+      </GridLayout>
+
+      <!-- Search Bar -->
+      <GridLayout row="1" class="mb-2" rows="auto">
+        <TextField hint="Cari produk (nama / SKU)..." text="{{ searchQuery }}" class="input-dark"
+          returnKeyType="search" autocorrect="false" />
+      </GridLayout>
+
+      <!-- Category Filter Pills -->
+      <ScrollView row="2" orientation="horizontal" scrollBarIndicatorVisible="false" class="mb-3">
+        <StackLayout orientation="horizontal">
+          <Label text="Semua" tap="onFilterCategory" class="{{ selectedCategory === 'all' ? 'pill active' : 'pill' }}" />
+          <Label text="Device" tap="onFilterDevice" class="{{ selectedCategory === 'device' ? 'pill active' : 'pill' }}" />
+          <Label text="Liquid" tap="onFilterLiquid" class="{{ selectedCategory === 'liquid' ? 'pill active' : 'pill' }}" />
+          <Label text="Coil" tap="onFilterCoil" class="{{ selectedCategory === 'coil' ? 'pill active' : 'pill' }}" />
+          <Label text="Cartridge" tap="onFilterCartridge" class="{{ selectedCategory === 'catridge' ? 'pill active' : 'pill' }}" />
+          <Label text="Lainnya" tap="onFilterOther" class="{{ selectedCategory === 'other' ? 'pill active' : 'pill' }}" />
+        </StackLayout>
+      </ScrollView>
+
+      <!-- Product List / Grid -->
+      <ListView row="3" items="{{ filteredProducts }}" itemTap="onProductTap" class="bg-slate-950">
+        <ListView.itemTemplate>
+          <GridLayout columns="64, *, auto" rows="auto" class="card-sm m-1 p-3">
+            <!-- Product Photo -->
+            <Image col="0" src="{{ photoUrl }}" class="product-image-sm" stretch="aspectFill" loadMode="async" />
+
+            <!-- Product Details -->
+            <StackLayout col="1" class="ml-3" verticalAlignment="center">
+              <Label text="{{ name }}" class="text-sm font-bold text-primary" textWrap="true" maxLines="1" />
+              <GridLayout columns="auto, auto" rows="auto" class="mt-1">
+                <Label col="0" text="{{ categoryLabel }}" class="badge badge-cyan text-xs" />
+                <Label col="1" text="{{ sku }}" class="text-xs text-muted ml-2" />
+              </GridLayout>
+            </StackLayout>
+
+            <!-- Price and Stock -->
+            <StackLayout col="2" horizontalAlignment="right" verticalAlignment="center">
+              <Label text="{{ formattedPrice }}" class="text-base font-extrabold text-emerald text-right" />
+              <Label text="{{ 'Stok: ' + stock + ' ' + unit }}" class="text-xs text-secondary text-right mt-1" />
+            </StackLayout>
+          </GridLayout>
+        </ListView.itemTemplate>
+      </ListView>
+
+      <!-- Loading Indicator -->
+      <ActivityIndicator row="3" busy="{{ isLoading }}" visibility="{{ isLoading ? 'visible' : 'collapsed' }}" />
+    </GridLayout>
+
+    <!-- RIGHT COLUMN: Persistent Cart & Instant Checkout (Detail) -->
+    <GridLayout col="1" rows="auto, *, auto" class="bg-slate-900 p-3" style="border-left-width: 1; border-left-color: #1e293b;">
+      
+      <!-- Cart Header -->
+      <GridLayout row="0" columns="*, auto, auto" class="p-2 mb-2" rows="auto" style="border-bottom-width: 1; border-bottom-color: #1e293b;">
+        <Label col="0" text="Keranjang Belanja" class="text-base font-bold text-primary" verticalAlignment="center" />
+        <Label col="1" text="{{ cartCount + ' item' }}" class="badge badge-emerald mr-2" verticalAlignment="center" />
+        <Button col="2" text="Bersihkan" tap="onClearCart" class="btn btn-outline btn-sm" visibility="{{ isCartEmpty ? 'collapsed' : 'visible' }}" />
+      </GridLayout>
+
+      <!-- Cart Items List -->
+      <ListView row="1" items="{{ cartItems }}" class="bg-slate-900" visibility="{{ isCartEmpty ? 'collapsed' : 'visible' }}">
+        <ListView.itemTemplate>
+          <GridLayout columns="*, auto, auto" rows="auto, auto" class="card-sm m-1 p-2">
+            <!-- Product Info -->
+            <StackLayout col="0" rowSpan="2" verticalAlignment="center">
+              <Label text="{{ product_name }}" class="text-sm font-bold text-primary" textWrap="true" maxLines="1" />
+              <Label text="{{ formattedUnitPrice }}" class="text-xs text-secondary" />
+              <Label text="{{ formattedSubtotal }}" class="text-sm font-bold text-emerald mt-1" />
+            </StackLayout>
+
+            <!-- Quantity Buttons -->
+            <GridLayout col="1" rowSpan="2" columns="auto, auto, auto" verticalAlignment="center" class="mr-2">
+              <Button col="0" text="−" tap="onDecrement" class="btn btn-slate btn-sm" style="width: 32; height: 32; padding: 0;" />
+              <Label col="1" text="{{ quantity }}" class="text-sm font-bold text-primary text-center" style="width: 32;" />
+              <Button col="2" text="+" tap="onIncrement" class="btn btn-slate btn-sm" style="width: 32; height: 32; padding: 0;" />
+            </GridLayout>
+
+            <!-- Remove Button -->
+            <Button col="2" rowSpan="2" text="✕" tap="onRemoveItem" class="btn btn-sm" style="background-color: transparent; color: #f43f5e; width: 32; padding: 0; font-weight: 700;" verticalAlignment="center" />
+          </GridLayout>
+        </ListView.itemTemplate>
+      </ListView>
+
+      <!-- Cart Empty Placeholder -->
+      <StackLayout row="1" class="empty-state" visibility="{{ isCartEmpty ? 'visible' : 'collapsed' }}">
+        <Label text="0" class="empty-state-icon" style="font-weight: 300;" />
+        <Label text="Keranjang Kasir Kosong" class="empty-state-text" />
+        <Label text="Ketuk produk di katalog sebelah kiri untuk menambahkan pesanan" class="text-xs text-muted text-center mt-1" textWrap="true" />
+      </StackLayout>
+
+      <!-- Live Checkout & Payment Controls -->
+      <StackLayout row="2" class="p-2" visibility="{{ isCartEmpty ? 'collapsed' : 'visible' }}" style="border-top-width: 1; border-top-color: #1e293b;">
+        <!-- Subtotal & Discount -->
+        <GridLayout columns="*, auto" class="mb-1">
+          <Label col="0" text="Subtotal" class="text-xs text-secondary" />
+          <Label col="1" text="{{ formattedSubtotal }}" class="text-xs font-semibold text-primary" />
+        </GridLayout>
+
+        <GridLayout columns="auto, *" class="mb-2">
+          <Label col="0" text="Diskon: Rp " class="text-xs text-secondary" verticalAlignment="center" />
+          <TextField col="1" hint="0" text="{{ discountInput }}" keyboardType="number" class="input-dark" style="height: 32; font-size: 13; padding: 2 6;" />
+        </GridLayout>
+
+        <!-- Grand Total -->
+        <GridLayout columns="*, auto" class="mb-2 p-2 bg-slate-800 rounded">
+          <Label col="0" text="TOTAL BAYAR" class="text-sm font-bold text-primary uppercase" verticalAlignment="center" />
+          <Label col="1" text="{{ formattedGrandTotal }}" class="text-lg font-extrabold text-emerald" />
+        </GridLayout>
+
+        <!-- Payment Method -->
+        <Label text="METODE PEMBAYARAN" class="text-xs font-bold text-secondary uppercase mb-1" />
+        <GridLayout columns="*, *, *" class="mb-2">
+          <Button col="0" text="Tunai" tap="onPayCash" class="{{ paymentMethod === 'Cash' ? 'btn btn-emerald btn-sm' : 'btn btn-outline btn-sm' }}" />
+          <Button col="1" text="QRIS" tap="onPayQRIS" class="{{ paymentMethod === 'QRIS' ? 'btn btn-cyan btn-sm' : 'btn btn-outline btn-sm' }}" style="margin-left: 3; margin-right: 3;" />
+          <Button col="2" text="Transfer" tap="onPayTransfer" class="{{ paymentMethod === 'Transfer' ? 'btn btn-slate btn-sm' : 'btn btn-outline btn-sm' }}" />
+        </GridLayout>
+
+        <!-- Cash Quick Tend Preset Buttons (If Cash) -->
+        <StackLayout visibility="{{ paymentMethod === 'Cash' ? 'visible' : 'collapsed' }}" class="mb-2">
+          <GridLayout columns="*, *, *, *" class="mb-1">
+            <Button col="0" text="Pas" tap="onPayExact" class="btn btn-slate btn-sm" style="font-size: 11; padding: 2 0;" />
+            <Button col="1" text="50k" tap="onPay50k" class="btn btn-slate btn-sm" style="font-size: 11; padding: 2 0; margin-left: 2;" />
+            <Button col="2" text="100k" tap="onPay100k" class="btn btn-slate btn-sm" style="font-size: 11; padding: 2 0; margin-left: 2;" />
+            <Button col="3" text="200k" tap="onPay200k" class="btn btn-slate btn-sm" style="font-size: 11; padding: 2 0; margin-left: 2;" />
+          </GridLayout>
+          <GridLayout columns="auto, *" class="mt-1">
+            <Label col="0" text="Nominal: Rp " class="text-xs text-secondary" verticalAlignment="center" />
+            <TextField col="1" hint="Masukkan uang tunai" text="{{ paidAmountInput }}" keyboardType="number" class="input-dark" style="height: 32; font-size: 13; padding: 2 6;" />
+          </GridLayout>
+          <GridLayout columns="*, auto" class="mt-1">
+            <Label col="0" text="Kembalian:" class="text-xs text-secondary" />
+            <Label col="1" text="{{ formattedChange }}" class="text-xs font-bold text-cyan" />
+          </GridLayout>
+        </StackLayout>
+
+        <!-- Big Checkout Action Button -->
+        <Button text="BAYAR SEKARANG" tap="onCheckout" class="btn btn-emerald btn-block" style="font-weight: 700;" isEnabled="{{ !isProcessing }}" />
+      </StackLayout>
+
+    </GridLayout>
+
+  </GridLayout>
+</Page>

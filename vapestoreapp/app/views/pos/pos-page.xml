@@ -1,0 +1,156 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  actionBarHidden="true"
+  class="bg-slate-950">
+
+  <GridLayout rows="auto, auto, auto, *">
+    <!-- 1. Header with Cart Quick Button -->
+    <GridLayout row="0" columns="*, auto, auto" class="p-3 pb-2" rows="auto">
+      <StackLayout col="0">
+        <Label text="SS VAPE — Kasir" class="text-xl font-bold text-primary" />
+        <Label text="{{ productCountText }}" class="text-xs text-secondary mt-0.5" />
+      </StackLayout>
+
+      <!-- Cart Icon Button with Badge Counter (Perfect Centering) -->
+      <GridLayout col="1" tap="onOpenCart" rows="*" columns="*" class="mr-2"
+        style="width: 44; height: 38; background-color: #032b1f; border-width: 1.5; border-color: #00ff87; border-radius: 12;"
+        verticalAlignment="center">
+        <Image row="0" col="0" src="~/assets/cart-icon.png" width="22" height="22" stretch="aspectFit"
+          horizontalAlignment="center" verticalAlignment="center" />
+        <Label row="0" col="0" text="{{ cartItemCount }}" visibility="{{ hasCartItems ? 'visible' : 'collapsed' }}"
+          horizontalAlignment="right" verticalAlignment="top"
+          style="font-size: 9; font-weight: 900; color: #020617; background-color: #00ff87; border-radius: 8; width: 16; height: 16; text-align: center; margin-top: -3; margin-right: -3; padding-top: 1;" />
+      </GridLayout>
+
+      <!-- Refresh Button (Perfect Centering) -->
+      <GridLayout col="2" tap="onRefresh" rows="*" columns="*"
+        style="width: 40; height: 38; background-color: #1e293b; border-radius: 12; border-width: 1; border-color: #334155;"
+        verticalAlignment="center">
+        <Label row="0" col="0" text="⟲" horizontalAlignment="center" verticalAlignment="center" textAlignment="center"
+          style="font-size: 18; font-weight: 900; color: #f8fafc;" />
+      </GridLayout>
+    </GridLayout>
+
+    <!-- 2. Search Bar -->
+    <GridLayout row="1" class="px-3 pb-2" rows="auto">
+      <TextField hint="Cari nama atau SKU produk vape..." text="{{ searchQuery }}" class="input-dark"
+        returnKeyType="search" autocorrect="false" style="border-radius: 14;" />
+    </GridLayout>
+
+    <!-- 3. Category & Stock Filter Pills -->
+    <ScrollView row="2" orientation="horizontal" scrollBarIndicatorVisible="false" class="px-3 pb-2">
+      <StackLayout orientation="horizontal">
+        <Label text="{{ allFilterText }}" tap="onFilterAll" class="{{ selectedFilter === 'all' ? 'pill active' : 'pill' }}" />
+        <Label text="Stok Menipis" tap="onFilterLow" class="{{ selectedFilter === 'low' ? 'pill active' : 'pill' }}" />
+        <Label text="Stok Habis" tap="onFilterOut" class="{{ selectedFilter === 'out' ? 'pill active' : 'pill' }}" />
+        <Label text="Device" tap="onFilterDevice" class="{{ selectedFilter === 'device' ? 'pill active' : 'pill' }}" />
+        <Label text="Liquid" tap="onFilterLiquid" class="{{ selectedFilter === 'liquid' ? 'pill active' : 'pill' }}" />
+        <Label text="Coil" tap="onFilterCoil" class="{{ selectedFilter === 'coil' ? 'pill active' : 'pill' }}" />
+        <Label text="Cartridge" tap="onFilterCartridge" class="{{ selectedFilter === 'catridge' ? 'pill active' : 'pill' }}" />
+        <Label text="Lainnya" tap="onFilterOther" class="{{ selectedFilter === 'other' ? 'pill active' : 'pill' }}" />
+      </StackLayout>
+    </ScrollView>
+
+    <!-- 4. 2-Column Product Grid (ListView with Left & Right Cards) -->
+    <ListView row="3" items="{{ productPairs }}" class="p-1" separatorColor="transparent">
+      <ListView.itemTemplate>
+        <GridLayout columns="*, *" rows="auto" class="px-1 py-1">
+          
+          <!-- LEFT CARD -->
+          <GridLayout col="0" rows="115, auto, auto, auto" class="card-product m-1" tap="onTapLeft"
+            style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 12; padding: 6;">
+            <!-- Top Image + Badges Overlay -->
+            <GridLayout row="0" rows="auto, *, auto" columns="*, auto" class="mb-1">
+              <!-- Product Image -->
+              <Image rowSpan="3" colSpan="2" src="{{ left.photoPath }}" stretch="aspectFill"
+                style="border-radius: 8; background-color: #162032; width: 100%; height: 115;" loadMode="async" />
+
+              <!-- Category Badge (Top-Left) -->
+              <Label row="0" col="0" text="{{ left.categoryLabel }}" class="{{ left.categoryBadgeClass }}"
+                style="margin: 4; font-size: 9; font-weight: bold; padding: 2 6; border-radius: 4;" horizontalAlignment="left" />
+
+              <!-- In-Cart Badge (Top-Right) -->
+              <Label row="0" col="1" text="{{ left.inCartText }}"
+                class="badge badge-emerald"
+                visibility="{{ left.hasInCart ? 'visible' : 'collapsed' }}"
+                style="margin: 4; font-size: 9; font-weight: bold; padding: 2 6; border-radius: 4;" horizontalAlignment="right" />
+
+              <!-- Stock Alert Badge (Bottom-Right) -->
+              <Label row="2" col="1" text="{{ left.stockBadgeText }}" class="{{ left.stockBadgeClass }}"
+                visibility="{{ left.stockBadgeText ? 'visible' : 'collapsed' }}"
+                style="margin: 4; font-size: 9; font-weight: bold; padding: 2 6; border-radius: 4;" horizontalAlignment="right" />
+            </GridLayout>
+
+            <!-- Product Title (Max 2 lines) -->
+            <Label row="1" text="{{ left.name }}" class="text-xs font-bold text-primary"
+              textWrap="true" maxLines="2" style="font-size: 11; font-weight: 700; color: #f8fafc; height: 30;" />
+
+            <!-- Product Specs / Variant Details -->
+            <Label row="2" text="{{ left.variantText }}" class="text-xxs text-secondary"
+              textWrap="false" maxLines="1" style="font-size: 9; color: #94a3b8; margin-top: 1; margin-bottom: 2;" />
+
+            <!-- Price & Stock Row -->
+            <GridLayout row="3" columns="*, auto" rows="auto" class="mt-0.5">
+              <Label col="0" text="{{ left.formattedPrice }}"
+                style="font-size: 12; font-weight: 800; color: #10b981;" />
+              <Label col="1" text="{{ left.stockText }}"
+                color="{{ left.stockColor }}"
+                fontSize="10" fontWeight="600"
+                textAlignment="right" verticalAlignment="center" />
+            </GridLayout>
+          </GridLayout>
+
+          <!-- RIGHT CARD -->
+          <GridLayout col="1" rows="115, auto, auto, auto" class="card-product m-1" tap="onTapRight"
+            visibility="{{ right ? 'visible' : 'hidden' }}"
+            style="background-color: #0d1527; border-width: 1; border-color: #1e293b; border-radius: 12; padding: 6;">
+            <!-- Top Image + Badges Overlay -->
+            <GridLayout row="0" rows="auto, *, auto" columns="*, auto" class="mb-1">
+              <!-- Product Image -->
+              <Image rowSpan="3" colSpan="2" src="{{ right.photoPath }}" stretch="aspectFill"
+                style="border-radius: 8; background-color: #162032; width: 100%; height: 115;" loadMode="async" />
+
+              <!-- Category Badge (Top-Left) -->
+              <Label row="0" col="0" text="{{ right.categoryLabel }}" class="{{ right.categoryBadgeClass }}"
+                style="margin: 4; font-size: 9; font-weight: bold; padding: 2 6; border-radius: 4;" horizontalAlignment="left" />
+
+              <!-- In-Cart Badge (Top-Right) -->
+              <Label row="0" col="1" text="{{ right.inCartText }}"
+                class="badge badge-emerald"
+                visibility="{{ right.hasInCart ? 'visible' : 'collapsed' }}"
+                style="margin: 4; font-size: 9; font-weight: bold; padding: 2 6; border-radius: 4;" horizontalAlignment="right" />
+
+              <!-- Stock Alert Badge (Bottom-Right) -->
+              <Label row="2" col="1" text="{{ right.stockBadgeText }}" class="{{ right.stockBadgeClass }}"
+                visibility="{{ right.stockBadgeText ? 'visible' : 'collapsed' }}"
+                style="margin: 4; font-size: 9; font-weight: bold; padding: 2 6; border-radius: 4;" horizontalAlignment="right" />
+            </GridLayout>
+
+            <!-- Product Title (Max 2 lines) -->
+            <Label row="1" text="{{ right.name }}" class="text-xs font-bold text-primary"
+              textWrap="true" maxLines="2" style="font-size: 11; font-weight: 700; color: #f8fafc; height: 30;" />
+
+            <!-- Product Specs / Variant Details -->
+            <Label row="2" text="{{ right.variantText }}" class="text-xxs text-secondary"
+              textWrap="false" maxLines="1" style="font-size: 9; color: #94a3b8; margin-top: 1; margin-bottom: 2;" />
+
+            <!-- Price & Stock Row -->
+            <GridLayout row="3" columns="*, auto" rows="auto" class="mt-0.5">
+              <Label col="0" text="{{ right.formattedPrice }}"
+                style="font-size: 12; font-weight: 800; color: #10b981;" />
+              <Label col="1" text="{{ right.stockText }}"
+                color="{{ right.stockColor }}"
+                fontSize="10" fontWeight="600"
+                textAlignment="right" verticalAlignment="center" />
+            </GridLayout>
+          </GridLayout>
+
+        </GridLayout>
+      </ListView.itemTemplate>
+    </ListView>
+
+    <!-- Loading Indicator -->
+    <ActivityIndicator row="3" busy="{{ isLoading }}" visibility="{{ isLoading ? 'visible' : 'collapsed' }}" />
+
+  </GridLayout>
+</Page>

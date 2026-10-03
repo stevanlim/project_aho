@@ -1,0 +1,38 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  class="bg-slate-950">
+
+  <ActionBar title="Peringatan Stok" class="bg-slate-900">
+    <NavigationButton text="" tap="onGoBack" android.systemIcon="ic_menu_back" />
+  </ActionBar>
+
+  <GridLayout rows="*">
+    <ListView row="0" items="{{ alerts }}">
+      <ListView.itemTemplate>
+        <GridLayout columns="auto, *, auto" class="card-sm m-1 p-3" style="margin-left: 16; margin-right: 16;" rows="auto">
+          <GridLayout col="0" rows="*" columns="*"
+            style="width: 28; height: 28; border-radius: 14; border-width: 1.5; border-color: #f59e0b; background-color: rgba(245, 158, 11, 0.12);"
+            verticalAlignment="center" horizontalAlignment="center">
+            <Label row="0" col="0" text="!" horizontalAlignment="center" verticalAlignment="middle" textAlignment="center"
+              style="font-size: 15; font-weight: 900; color: #f59e0b;" />
+          </GridLayout>
+          <StackLayout col="1" class="ml-2">
+            <Label text="{{ name }}" class="text-sm font-bold text-primary" textWrap="true" />
+            <Label text="{{ sku }}" class="text-xs text-muted" />
+          </StackLayout>
+          <StackLayout col="2" horizontalAlignment="right" verticalAlignment="center">
+            <Label text="{{ stock + ' ' + unit }}" class="{{ stock === 0 ? 'text-base font-bold text-rose' : 'text-base font-bold text-amber' }}" />
+            <Label text="{{ stock === 0 ? 'HABIS' : 'RENDAH' }}" class="{{ stock === 0 ? 'badge badge-rose' : 'badge badge-amber' }}" />
+          </StackLayout>
+        </GridLayout>
+      </ListView.itemTemplate>
+    </ListView>
+
+    <ActivityIndicator row="0" busy="{{ isLoading }}" visibility="{{ isLoading ? 'visible' : 'collapsed' }}" />
+
+    <StackLayout row="0" visibility="{{ isEmpty ? 'visible' : 'collapsed' }}" class="empty-state">
+      <Label text="OK" class="text-neon-green" style="font-size: 28; font-weight: 800; text-align: center; margin-bottom: 8;" />
+      <Label text="Semua stok aman!" class="empty-state-text" />
+    </StackLayout>
+  </GridLayout>
+</Page>

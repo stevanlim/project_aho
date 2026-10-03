@@ -1,0 +1,74 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  actionBarHidden="true"
+  backgroundSpanUnderStatusBar="true"
+  class="bg-slate-950">
+
+  <GridLayout rows="*, auto, auto, *" columns="*" class="p-6">
+    <!-- Top: Header -->
+    <StackLayout row="0" verticalAlignment="bottom" horizontalAlignment="center" class="mb-4">
+      <!-- Circular Logo with Neon Border Ring -->
+      <StackLayout horizontalAlignment="center" verticalAlignment="center" class="mb-3"
+        style="width: 80; height: 80; border-radius: 40; background-color: #0d1527; border-width: 2.5; border-color: #00f0ff; padding: 6;">
+        <Image src="~/assets/logo.png" width="66" height="66" stretch="aspectFit"
+          style="border-radius: 33;" />
+      </StackLayout>
+      <Label text="Verifikasi PIN" class="text-center text-2xl font-bold text-primary" />
+      <Label text="Masukkan 6 digit PIN keamanan" class="text-center text-sm text-secondary mt-1" />
+    </StackLayout>
+
+    <!-- PIN Dots Display -->
+    <StackLayout row="1" class="mb-4">
+      <!-- Error message -->
+      <Label text="{{ errorMessage }}" visibility="{{ hasError ? 'visible' : 'collapsed' }}"
+        class="text-rose text-sm text-center mb-3 p-3 bg-rose-dim rounded" textWrap="true" />
+
+      <!-- PIN Dots -->
+      <GridLayout columns="*, *, *, *, *, *" rows="auto" horizontalAlignment="center" class="mb-4">
+        <StackLayout col="0" class="{{ pinLength >= 1 ? 'pin-dot filled' : 'pin-dot' }}" horizontalAlignment="center" />
+        <StackLayout col="1" class="{{ pinLength >= 2 ? 'pin-dot filled' : 'pin-dot' }}" horizontalAlignment="center" />
+        <StackLayout col="2" class="{{ pinLength >= 3 ? 'pin-dot filled' : 'pin-dot' }}" horizontalAlignment="center" />
+        <StackLayout col="3" class="{{ pinLength >= 4 ? 'pin-dot filled' : 'pin-dot' }}" horizontalAlignment="center" />
+        <StackLayout col="4" class="{{ pinLength >= 5 ? 'pin-dot filled' : 'pin-dot' }}" horizontalAlignment="center" />
+        <StackLayout col="5" class="{{ pinLength >= 6 ? 'pin-dot filled' : 'pin-dot' }}" horizontalAlignment="center" />
+      </GridLayout>
+    </StackLayout>
+
+    <!-- Keypad -->
+    <StackLayout row="2" horizontalAlignment="center">
+      <!-- Row 1: 1 2 3 -->
+      <GridLayout columns="auto, auto, auto" rows="auto" class="mb-2">
+        <Button col="0" text="1" tap="onKeyPress" class="keypad-btn" />
+        <Button col="1" text="2" tap="onKeyPress" class="keypad-btn" />
+        <Button col="2" text="3" tap="onKeyPress" class="keypad-btn" />
+      </GridLayout>
+
+      <!-- Row 2: 4 5 6 -->
+      <GridLayout columns="auto, auto, auto" rows="auto" class="mb-2">
+        <Button col="0" text="4" tap="onKeyPress" class="keypad-btn" />
+        <Button col="1" text="5" tap="onKeyPress" class="keypad-btn" />
+        <Button col="2" text="6" tap="onKeyPress" class="keypad-btn" />
+      </GridLayout>
+
+      <!-- Row 3: 7 8 9 -->
+      <GridLayout columns="auto, auto, auto" rows="auto" class="mb-2">
+        <Button col="0" text="7" tap="onKeyPress" class="keypad-btn" />
+        <Button col="1" text="8" tap="onKeyPress" class="keypad-btn" />
+        <Button col="2" text="9" tap="onKeyPress" class="keypad-btn" />
+      </GridLayout>
+
+      <!-- Row 4: Back 0 Enter -->
+      <GridLayout columns="auto, auto, auto" rows="auto">
+        <Button col="0" text="⌫" tap="onBackspace" class="keypad-btn" />
+        <Button col="1" text="0" tap="onKeyPress" class="keypad-btn" />
+        <Button col="2" text="✓" tap="onSubmitPin" class="keypad-btn keypad-btn-emerald" isEnabled="{{ !isLoading }}" />
+      </GridLayout>
+    </StackLayout>
+
+    <!-- Bottom spacer -->
+    <StackLayout row="3" verticalAlignment="top" horizontalAlignment="center" class="mt-4">
+      <ActivityIndicator busy="{{ isLoading }}" visibility="{{ isLoading ? 'visible' : 'collapsed' }}" class="mt-4" />
+      <Button text="← Kembali ke Login" tap="onBackToLogin" class="btn btn-outline btn-sm mt-4" />
+    </StackLayout>
+  </GridLayout>
+</Page>

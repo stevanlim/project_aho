@@ -1,0 +1,71 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  class="bg-slate-950">
+
+  <ActionBar title="Detail Produk" class="bg-slate-900">
+    <NavigationButton text="" tap="onGoBack" android.systemIcon="ic_menu_back" />
+  </ActionBar>
+
+  <ScrollView>
+    <StackLayout class="p-4">
+      <!-- Loading -->
+      <ActivityIndicator busy="{{ isLoading }}" visibility="{{ isLoading ? 'visible' : 'collapsed' }}" class="mt-4" />
+
+      <!-- Product Image -->
+      <Image src="{{ photoUrl }}" class="product-image-lg mb-4" stretch="aspectFill" loadMode="async"
+        visibility="{{ !isLoading ? 'visible' : 'collapsed' }}" />
+
+      <!-- Name & SKU -->
+      <Label text="{{ product.name }}" class="text-2xl font-extrabold text-primary" textWrap="true" />
+      <Label text="{{ product.sku }}" class="text-sm text-muted mt-1" />
+
+      <!-- Badges -->
+      <StackLayout orientation="horizontal" class="mt-2">
+        <Label text="{{ categoryLabel }}" class="badge badge-cyan" />
+        <Label text="{{ statusLabel }}" class="{{ statusBadgeClass }}" style="margin-left: 6;" />
+      </StackLayout>
+
+      <!-- Price Card -->
+      <GridLayout columns="*, *" class="card mt-4" rows="auto">
+        <StackLayout col="0">
+          <Label text="Harga Jual" class="text-xs font-bold text-secondary mb-1" />
+          <Label text="{{ formattedSellingPrice }}" class="text-xl font-extrabold text-emerald" />
+        </StackLayout>
+        <StackLayout col="1">
+          <Label text="Harga Modal" class="text-xs font-bold text-secondary mb-1" />
+          <Label text="{{ formattedPurchasePrice }}" class="text-lg font-bold text-amber" />
+        </StackLayout>
+      </GridLayout>
+
+      <!-- Stock Info -->
+      <GridLayout columns="*, *" class="card mt-3" rows="auto">
+        <StackLayout col="0">
+          <Label text="Stok Tersedia" class="text-xs font-bold text-secondary mb-1" />
+          <Label text="{{ product.stock + ' ' + product.unit }}" class="{{ stockClass + ' text-xl font-extrabold' }}" />
+        </StackLayout>
+        <StackLayout col="1">
+          <Label text="Kategori" class="text-xs font-bold text-secondary mb-1" />
+          <Label text="{{ categoryLabel }}" class="text-lg font-bold text-cyan" />
+        </StackLayout>
+      </GridLayout>
+
+      <!-- Liquid/Cartridge Specific -->
+      <StackLayout class="card mt-3" visibility="{{ hasSpecificInfo ? 'visible' : 'collapsed' }}">
+        <Label text="Spesifikasi Produk" class="text-xs font-bold text-secondary mb-2" />
+        <Label text="{{ specificInfo }}" class="text-sm text-primary" textWrap="true" />
+      </StackLayout>
+
+      <!-- Description -->
+      <StackLayout class="card mt-3" visibility="{{ product.description ? 'visible' : 'collapsed' }}">
+        <Label text="Deskripsi" class="text-xs font-bold text-secondary mb-2" />
+        <Label text="{{ product.description }}" class="text-sm text-secondary" textWrap="true" />
+      </StackLayout>
+
+      <!-- Action Buttons -->
+      <GridLayout columns="*, *" class="mt-4" rows="auto">
+        <Button col="0" text="EDIT PRODUK" tap="onEdit" class="btn btn-amber" style="margin-right: 4; font-weight: 700;" />
+        <Button col="1" text="HAPUS" tap="onDelete" class="btn btn-rose" style="margin-left: 4; font-weight: 700;" />
+      </GridLayout>
+    </StackLayout>
+  </ScrollView>
+</Page>

@@ -1,0 +1,137 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  class="bg-slate-950">
+
+  <ActionBar title="Stok Masuk" class="bg-slate-900">
+    <NavigationButton text="" tap="onGoBack" android.systemIcon="ic_menu_back" />
+  </ActionBar>
+
+  <ScrollView>
+    <StackLayout class="p-4">
+      <!-- Error Message Banner -->
+      <Label text="{{ errorMessage }}" visibility="{{ errorMessage ? 'visible' : 'collapsed' }}"
+        class="text-rose text-sm p-3 bg-rose-dim rounded mb-3" textWrap="true"
+        style="border-width: 1; border-color: #f43f5e;" />
+
+      <!-- Success Message Banner -->
+      <Label text="{{ successMessage }}" visibility="{{ successMessage ? 'visible' : 'collapsed' }}"
+        class="text-emerald text-sm p-3 bg-emerald-dim rounded mb-3" textWrap="true"
+        style="border-width: 1; border-color: #00ff87;" />
+
+      <!-- Loading Indicator -->
+      <ActivityIndicator busy="{{ isLoadingProducts }}" visibility="{{ isLoadingProducts ? 'visible' : 'collapsed' }}" class="mb-3" />
+
+      <!-- 1. PRODUCT SELECTION SECTION -->
+      <!-- Case A: Product NOT YET selected (Show search bar and results only on search) -->
+      <StackLayout visibility="{{ !hasSelectedProduct ? 'visible' : 'collapsed' }}" class="mb-3">
+        <Label text="PILIH PRODUK" class="text-xs font-bold text-secondary mb-1" />
+        
+        <!-- Search bar with Search button -->
+        <GridLayout columns="*, auto" class="mb-2">
+          <TextField col="0" hint="Ketik nama atau SKU untuk mencari..." text="{{ searchQuery }}" class="input-dark"
+            returnKeyType="search" returnPress="onSearch" autocorrect="false"
+            style="background-color: #0d1527; border-width: 1.5; border-color: #1e293b; border-radius: 12; padding: 10 12; color: #f8fafc;" />
+          <Button col="1" text="🔍 Cari" tap="onSearch" class="btn btn-cyan btn-sm ml-2"
+            style="font-size: 13; font-weight: 800; border-radius: 12; padding: 10 16; height: 46;" />
+        </GridLayout>
+
+        <!-- Subtle guide card when search results are hidden -->
+        <GridLayout visibility="{{ !showSearchResults ? 'visible' : 'collapsed' }}" rows="auto" columns="*" class="p-3 mb-2"
+          style="background-color: rgba(15, 23, 42, 0.6); border-width: 1; border-color: #1e293b; border-radius: 12;">
+          <Label text="Ketik nama atau SKU lalu tekan tombol Cari untuk memilih produk."
+            class="text-xs text-muted text-center" textWrap="true" />
+        </GridLayout>
+
+        <!-- Selectable Product Cards List via Repeater (Only shown when user presses search) -->
+        <StackLayout visibility="{{ showSearchResults ? 'visible' : 'collapsed' }}" class="card p-2 mb-3"
+          style="background-color: #0b1120; border-width: 1; border-color: #1e293b; border-radius: 14;">
+          <GridLayout columns="*, auto" class="mb-2 px-1">
+            <Label col="0" text="{{ searchResultsCountText }}" class="text-xxs font-bold text-secondary" verticalAlignment="center" />
+            <Label col="1" text="✕ Sembunyikan" tap="onCloseSearchResults" class="text-xxs font-bold text-rose" verticalAlignment="center" style="padding: 2 6;" />
+          </GridLayout>
+          
+          <Repeater items="{{ filteredProducts }}">
+            <Repeater.itemTemplate>
+              <GridLayout columns="52, *, auto" tap="onSelectProductItem"
+                class="p-2 mb-1" style="background-color: #0f172a; border-radius: 10; border-width: 1; border-color: #1e293b;">
+                <!-- Product image on the left -->
+                <Image col="0" src="{{ photoUrl }}" class="product-image-sm" stretch="aspectFill" loadMode="async"
+                  style="width: 52; height: 52; border-radius: 8;" verticalAlignment="center" />
+                
+                <!-- Product text details -->
+                <StackLayout col="1" class="ml-2" verticalAlignment="center">
+                  <Label text="{{ name }}" class="text-sm font-bold text-primary" textWrap="true" maxLines="2" />
+                  <Label text="{{ stockText }}" class="text-xs text-secondary mt-0.5" />
+                </StackLayout>
+
+                <!-- Select button -->
+                <Label col="2" text="PILIH →" verticalAlignment="center"
+                  style="font-size: 11; font-weight: 800; color: #00f0ff; background-color: rgba(0, 240, 255, 0.1); border-radius: 8; border-width: 1; border-color: #00f0ff; padding: 6 10;" />
+              </GridLayout>
+            </Repeater.itemTemplate>
+          </Repeater>
+
+          <!-- Empty search result state -->
+          <Label text="Tidak ada produk yang cocok dengan pencarian."
+            visibility="{{ filteredProducts.length === 0 ? 'visible' : 'collapsed' }}"
+            class="text-xs text-muted text-center py-4" />
+        </StackLayout>
+      </StackLayout>
+
+      <!-- Case B: Product IS selected (Show active neon product card + Change button) -->
+      <StackLayout visibility="{{ hasSelectedProduct ? 'visible' : 'collapsed' }}" class="mb-4">
+        <Label text="PRODUK TERPILIH" class="text-xs font-bold text-secondary mb-1" />
+        <StackLayout class="card p-4"
+          style="background-color: #032b1f; border-width: 1.5; border-color: #00ff87; border-radius: 16;">
+          <GridLayout columns="52, *, auto" rows="auto">
+            <Image col="0" src="{{ selectedProductPhotoUrl }}" class="product-image-sm" stretch="aspectFill" loadMode="async"
+              style="width: 52; height: 52; border-radius: 10;" verticalAlignment="center" />
+            <StackLayout col="1" class="ml-3" verticalAlignment="center">
+              <Label text="{{ selectedProductName }}" class="text-base font-extrabold text-primary" textWrap="true" />
+              <Label text="{{ selectedProductSku }}" class="text-xs text-muted mt-0.5" />
+            </StackLayout>
+            <Button col="2" text="Ganti Produk" tap="onChangeProduct" class="btn btn-slate btn-sm"
+              style="font-size: 11; font-weight: 700; border-radius: 8; padding: 6 10;" />
+          </GridLayout>
+
+          <StackLayout style="height: 1; background-color: rgba(0, 255, 135, 0.2); margin: 10 0;" />
+
+          <GridLayout columns="*, *" rows="auto">
+            <StackLayout col="0">
+              <Label text="Stok Sekarang" class="text-xxs text-secondary" />
+              <Label text="{{ selectedProductStock }}" class="text-base font-bold text-primary mt-0.5" />
+            </StackLayout>
+            <StackLayout col="1">
+              <Label text="Harga Modal Saat Ini" class="text-xxs text-secondary" />
+              <Label text="{{ selectedProductCurrentPrice }}" class="text-base font-bold text-amber mt-0.5" />
+            </StackLayout>
+          </GridLayout>
+        </StackLayout>
+      </StackLayout>
+
+      <!-- 2. QUANTITY INPUT -->
+      <Label text="Jumlah Stok Masuk (Wajib)" class="text-xs font-bold text-secondary mb-1" />
+      <TextField hint="Contoh: 10 (atau minus -2 untuk koreksi)" text="{{ quantity }}" keyboardType="number"
+        class="input-dark mb-3"
+        style="background-color: #0d1527; border-width: 1.5; border-color: #1e293b; border-radius: 12; padding: 12 14; font-size: 16; font-weight: bold; color: #00ff87;" />
+
+      <!-- 3. PURCHASE PRICE INPUT -->
+      <Label text="Harga Modal Satuan Terbaru (Rp)" class="text-xs font-bold text-secondary mb-1" />
+      <TextField hint="Contoh: 150000" text="{{ purchasePrice }}" keyboardType="number"
+        class="input-dark mb-3"
+        style="background-color: #0d1527; border-width: 1.5; border-color: #1e293b; border-radius: 12; padding: 12 14; font-size: 16; font-weight: bold; color: #f8fafc;" />
+
+      <!-- 4. NOTE INPUT -->
+      <Label text="Catatan / Supplier (Opsional)" class="text-xs font-bold text-secondary mb-1" />
+      <TextField hint="Contoh: Restock batch baru dari supplier" text="{{ note }}"
+        class="input-dark mb-4"
+        style="background-color: #0d1527; border-width: 1.5; border-color: #1e293b; border-radius: 12; padding: 12 14; color: #f8fafc;" />
+
+      <!-- 5. SUBMIT BUTTON -->
+      <Button text="{{ isSubmitting ? 'Menyimpan...' : 'SIMPAN STOK MASUK' }}"
+        tap="onSubmit" isEnabled="{{ !isSubmitting }}"
+        class="btn btn-emerald btn-block btn-lg"
+        style="background-color: #059669; border-width: 1.5; border-color: #00ff87; color: #ffffff; font-size: 15; font-weight: 800; border-radius: 14; padding: 14;" />
+    </StackLayout>
+  </ScrollView>
+</Page>

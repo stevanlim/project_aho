@@ -1,0 +1,599 @@
+@import '@nativescript/theme/css/core.css';
+
+/* ============================================
+   SS VAPE - Dark Mode Theme (Shadcn/Tailwind)
+   ============================================ */
+
+/* ---- Root / Page ---- */
+Page {
+  background-color: #020617;
+  color: #f8fafc;
+}
+
+Frame {
+  background-color: #020617;
+}
+
+/* ---- Action Bar ---- */
+ActionBar {
+  background-color: #0f172a;
+  color: #f8fafc;
+  font-size: 18;
+  font-weight: 700;
+  border-bottom-width: 1;
+  border-bottom-color: #1e293b;
+}
+
+ActionBar .action-bar-title {
+  color: #f8fafc;
+  font-weight: 700;
+}
+
+/* ---- Typography ---- */
+.text-primary { color: #f8fafc; }
+.text-secondary { color: #94a3b8; }
+.text-muted { color: #64748b; }
+.text-emerald { color: #10b981; }
+.text-cyan { color: #06b6d4; }
+.text-amber { color: #f59e0b; }
+.text-rose { color: #f43f5e; }
+.text-indigo { color: #8b5cf6; }
+.text-white { color: #ffffff; }
+
+.text-xs { font-size: 11; }
+.text-sm { font-size: 13; }
+.text-base { font-size: 15; }
+.text-lg { font-size: 17; }
+.text-xl { font-size: 20; }
+.text-2xl { font-size: 24; }
+.text-3xl { font-size: 30; }
+.text-4xl { font-size: 36; }
+
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.uppercase { text-transform: uppercase; }
+.tracking-wider { letter-spacing: 0; }
+
+/* ---- Backgrounds ---- */
+.bg-slate-950 { background-color: #020617; }
+.bg-slate-900 { background-color: #0f172a; }
+.bg-slate-800 { background-color: #1e293b; }
+.bg-slate-700 { background-color: #334155; }
+
+.bg-emerald { background-color: #10b981; }
+.bg-emerald-dark { background-color: #059669; }
+.bg-emerald-dim { background-color: rgba(16, 185, 129, 0.1); }
+
+.bg-cyan { background-color: #06b6d4; }
+.bg-cyan-dim { background-color: rgba(6, 182, 212, 0.1); }
+
+.bg-amber { background-color: #f59e0b; }
+.bg-amber-dim { background-color: rgba(245, 158, 11, 0.1); }
+
+.bg-rose { background-color: #f43f5e; }
+.bg-rose-dim { background-color: rgba(244, 63, 94, 0.1); }
+
+.bg-indigo { background-color: #8b5cf6; }
+.bg-indigo-dim { background-color: rgba(139, 92, 246, 0.1); }
+
+/* ---- Cards ---- */
+.card {
+  background-color: #0f172a;
+  border-color: #1e293b;
+  border-width: 1;
+  border-radius: 16;
+  padding: 16;
+}
+
+.card-sm {
+  background-color: #0f172a;
+  border-color: #1e293b;
+  border-width: 1;
+  border-radius: 12;
+  padding: 12;
+}
+
+.card-dark {
+  background-color: #020617;
+  border-color: #1e293b;
+  border-width: 1;
+  border-radius: 16;
+  padding: 16;
+}
+
+/* ---- Borders ---- */
+.border-slate { border-color: #1e293b; border-width: 1; }
+.border-emerald { border-color: #10b981; border-width: 1; }
+.border-rose { border-color: #f43f5e; border-width: 1; }
+.border-amber { border-color: #f59e0b; border-width: 1; }
+
+.rounded-sm { border-radius: 8; }
+.rounded { border-radius: 12; }
+.rounded-lg { border-radius: 16; }
+.rounded-xl { border-radius: 20; }
+.rounded-2xl { border-radius: 24; }
+.rounded-full { border-radius: 999; }
+
+/* ---- Spacing ---- */
+.p-0 { padding: 0; }
+.p-1 { padding: 4; }
+.p-2 { padding: 8; }
+.p-3 { padding: 12; }
+.p-4 { padding: 16; }
+.p-5 { padding: 20; }
+.p-6 { padding: 24; }
+.p-8 { padding: 32; }
+
+.m-0 { margin: 0; }
+.m-1 { margin: 4; }
+.m-2 { margin: 8; }
+.m-3 { margin: 12; }
+.m-4 { margin: 16; }
+
+.mt-1 { margin-top: 4; }
+.mt-2 { margin-top: 8; }
+.mt-3 { margin-top: 12; }
+.mt-4 { margin-top: 16; }
+.mb-1 { margin-bottom: 4; }
+.mb-2 { margin-bottom: 8; }
+.mb-3 { margin-bottom: 12; }
+.mb-4 { margin-bottom: 16; }
+.ml-2 { margin-left: 8; }
+.mr-2 { margin-right: 8; }
+
+/* ---- Buttons ---- */
+.btn {
+  font-size: 15;
+  font-weight: 600;
+  border-radius: 12;
+  padding: 14 24;
+  text-transform: none;
+  border-width: 0;
+  color: #ffffff;
+}
+
+.btn-emerald {
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+.btn-emerald:active {
+  background-color: #059669;
+}
+
+.btn-cyan {
+  background-color: #06b6d4;
+  color: #ffffff;
+}
+
+.btn-rose {
+  background-color: #f43f5e;
+  color: #ffffff;
+}
+
+.btn-rose:active {
+  background-color: #e11d48;
+}
+
+.btn-amber {
+  background-color: #f59e0b;
+  color: #ffffff;
+}
+
+.btn-slate {
+  background-color: #1e293b;
+  color: #f8fafc;
+}
+
+.btn-slate:active {
+  background-color: #334155;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border-width: 1;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+.btn-outline:active {
+  background-color: #1e293b;
+}
+
+.btn-lg {
+  font-size: 17;
+  padding: 16 32;
+  border-radius: 14;
+}
+
+.btn-sm {
+  font-size: 13;
+  padding: 8 16;
+  border-radius: 8;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* ---- Form Selectors / Chip Buttons ---- */
+.chip-btn {
+  background-color: #0d1527;
+  border-width: 2;
+  border-color: #334155;
+  border-radius: 12;
+  color: #94a3b8;
+  font-size: 13;
+  font-weight: 600;
+  padding: 12 4;
+  text-alignment: center;
+}
+
+.chip-btn-active-cyan {
+  background-color: #083344;
+  border-width: 2;
+  border-color: #22d3ee;
+  border-radius: 12;
+  color: #67e8f9;
+  font-size: 13;
+  font-weight: 800;
+  padding: 12 4;
+  text-alignment: center;
+}
+
+.chip-btn-active-indigo {
+  background-color: #1e1b4b;
+  border-width: 2;
+  border-color: #818cf8;
+  border-radius: 12;
+  color: #a5b4fc;
+  font-size: 13;
+  font-weight: 800;
+  padding: 12 4;
+  text-alignment: center;
+}
+
+.chip-btn-active-amber {
+  background-color: #451a03;
+  border-width: 2;
+  border-color: #fbbf24;
+  border-radius: 12;
+  color: #fde68a;
+  font-size: 13;
+  font-weight: 800;
+  padding: 12 4;
+  text-alignment: center;
+}
+
+.chip-btn-active-emerald {
+  background-color: #022c22;
+  border-width: 2;
+  border-color: #34d399;
+  border-radius: 12;
+  color: #6ee7b7;
+  font-size: 13;
+  font-weight: 800;
+  padding: 12 4;
+  text-alignment: center;
+}
+
+.chip-btn-active-slate {
+  background-color: #1e293b;
+  border-width: 2;
+  border-color: #94a3b8;
+  border-radius: 12;
+  color: #f8fafc;
+  font-size: 13;
+  font-weight: 800;
+  padding: 12 4;
+  text-alignment: center;
+}
+
+/* ---- Text Fields / Inputs ---- */
+TextField, TextView {
+  background-color: #0f172a;
+  color: #f8fafc;
+  border-width: 1;
+  border-color: #1e293b;
+  border-radius: 12;
+  padding: 12 16;
+  font-size: 15;
+  placeholder-color: #64748b;
+}
+
+TextField:focus, TextView:focus {
+  border-color: #10b981;
+}
+
+.input-dark {
+  background-color: #020617;
+  color: #f8fafc;
+  border-width: 1;
+  border-color: #1e293b;
+  border-radius: 12;
+  padding: 12 16;
+  font-size: 15;
+  placeholder-color: #64748b;
+}
+
+/* ---- Search Bar ---- */
+SearchBar {
+  background-color: #0f172a;
+  color: #f8fafc;
+  border-radius: 12;
+  font-size: 14;
+}
+
+/* ---- ListView ---- */
+ListView {
+  background-color: transparent;
+  separator-color: transparent;
+}
+
+/* ---- Badges ---- */
+.badge {
+  font-size: 10;
+  font-weight: 700;
+  border-radius: 6;
+  padding: 3 8;
+  color: #ffffff;
+}
+
+.badge-emerald {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+}
+
+.badge-rose {
+  background-color: rgba(244, 63, 94, 0.15);
+  color: #fb7185;
+}
+
+.badge-amber {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+
+.badge-cyan {
+  background-color: rgba(6, 182, 212, 0.15);
+  color: #22d3ee;
+}
+
+.badge-indigo {
+  background-color: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+}
+
+.stock-low { font-size: 9; color: #f59e0b; font-weight: 700; }
+.stock-normal { font-size: 9; color: #64748b; }
+.stock-out { font-size: 9; color: #f43f5e; font-weight: 700; }
+
+.badge-slate {
+  background-color: rgba(100, 116, 139, 0.15);
+  color: #94a3b8;
+}
+
+/* ---- Product Image ---- */
+.product-image {
+  border-radius: 12;
+  background-color: #1e293b;
+  stretch: aspectFill;
+}
+
+.product-image-sm {
+  width: 48;
+  height: 48;
+  border-radius: 10;
+  background-color: #1e293b;
+  stretch: aspectFill;
+}
+
+.product-image-lg {
+  width: 100%;
+  height: 200;
+  border-radius: 16;
+  background-color: #1e293b;
+  stretch: aspectFill;
+}
+
+/* ---- Bottom Navigation Bar ---- */
+.bottom-nav {
+  background-color: #080d1a;
+  border-top-width: 1;
+  border-top-color: #1e293b;
+  padding: 8 0;
+}
+
+.bottom-nav-item {
+  color: #64748b;
+  font-size: 10;
+  text-align: center;
+  padding: 4 0;
+}
+
+.bottom-nav-item.active {
+  color: #00f0ff;
+  font-weight: 700;
+}
+
+.bottom-nav-icon {
+  font-size: 18;
+  color: #64748b;
+  text-align: center;
+}
+
+.bottom-nav-icon.active {
+  color: #00f0ff;
+}
+
+/* ---- Floating Cart Bar ---- */
+.cart-bar {
+  background-color: #00ff87;
+  border-radius: 16;
+  padding: 14 20;
+  margin: 8 16;
+}
+
+.cart-bar-text {
+  color: #020617;
+  font-size: 15;
+  font-weight: 800;
+}
+
+/* ---- Category Pills ---- */
+.pill {
+  background-color: #0f172a;
+  border-width: 1;
+  border-color: #334155;
+  border-radius: 20;
+  padding: 6 14;
+  margin: 0 4;
+  font-size: 12;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.pill.active {
+  background-color: #032b1f;
+  border-color: #00ff87;
+  color: #00ff87;
+  font-weight: 700;
+}
+
+/* ---- Stat Card ---- */
+.stat-card {
+  background-color: #0f172a;
+  border-color: #1e293b;
+  border-width: 1;
+  border-radius: 16;
+  padding: 16;
+}
+
+.stat-value {
+  font-size: 24;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.stat-label {
+  font-size: 11;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+/* ---- PIN Keypad ---- */
+.pin-dot {
+  width: 16;
+  height: 16;
+  border-radius: 8;
+  background-color: #1e293b;
+  margin: 0 8;
+}
+
+.pin-dot.filled {
+  background-color: #10b981;
+}
+
+.keypad-btn {
+  width: 72;
+  height: 72;
+  border-radius: 36;
+  background-color: #0f172a;
+  border-width: 1;
+  border-color: #1e293b;
+  font-size: 24;
+  font-weight: 700;
+  color: #f8fafc;
+  text-align: center;
+  margin: 6;
+}
+
+.keypad-btn:active {
+  background-color: #1e293b;
+}
+
+.keypad-btn-emerald {
+  background-color: rgba(16, 185, 129, 0.15);
+  border-color: #10b981;
+  color: #10b981;
+}
+
+/* ---- Loading ---- */
+ActivityIndicator {
+  color: #10b981;
+}
+
+.loading-container {
+  padding: 40;
+}
+
+/* ---- Divider ---- */
+.divider {
+  height: 1;
+  background-color: #1e293b;
+  margin: 8 0;
+}
+
+/* ---- Receipt / Invoice ---- */
+.receipt-container {
+  background-color: #ffffff;
+  border-radius: 16;
+  padding: 24;
+  margin: 16;
+}
+
+.receipt-text {
+  color: #1e293b;
+  font-size: 13;
+}
+
+.receipt-header {
+  color: #020617;
+  font-size: 20;
+  font-weight: 800;
+  text-align: center;
+}
+
+/* ---- Misc ---- */
+.separator { height: 1; background-color: #1e293b; }
+.flex-grow { flex-grow: 1; }
+
+.empty-state {
+  padding: 40;
+  text-align: center;
+}
+
+.empty-state-icon {
+  font-size: 48;
+  color: #334155;
+  margin-bottom: 12;
+}
+
+.empty-state-text {
+  font-size: 14;
+  color: #64748b;
+}
+
+/* ---- Animations ---- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ---- Neon Accent Utilities ---- */
+.text-neon-cyan { color: #00f0ff; }
+.text-neon-green { color: #00ff87; }
+.border-neon-cyan { border-color: #00f0ff; border-width: 1; }
+.border-neon-green { border-color: #00ff87; border-width: 1; }
+.bg-neon-cyan-dim { background-color: rgba(0, 240, 255, 0.1); }
+.bg-neon-green-dim { background-color: rgba(0, 255, 135, 0.1); }
+

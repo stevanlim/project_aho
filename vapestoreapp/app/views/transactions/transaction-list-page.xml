@@ -1,0 +1,60 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  actionBarHidden="true"
+  class="bg-slate-950">
+
+  <GridLayout rows="auto, auto, *">
+    <!-- Header -->
+    <StackLayout row="0" class="p-4">
+      <Label text="Riwayat Transaksi" class="text-xl font-bold text-primary" />
+      <Label text="{{ totalSales + ' transaksi ditemukan' }}" class="text-xs text-secondary mt-1" />
+    </StackLayout>
+
+    <!-- Filters -->
+    <StackLayout row="1" class="p-4" style="padding-top: 0;">
+      <TextField hint="Cari nomor invoice..." text="{{ searchQuery }}" class="input-dark mb-2"
+        returnKeyType="search" autocorrect="false" />
+      <ScrollView orientation="horizontal" scrollBarIndicatorVisible="false">
+        <StackLayout orientation="horizontal">
+          <Label text="Semua" tap="onFilterAll" class="{{ filterPreset === '' ? 'pill active' : 'pill' }}" />
+          <Label text="Hari Ini" tap="onFilterToday" class="{{ filterPreset === 'today' ? 'pill active' : 'pill' }}" />
+          <Label text="Kemarin" tap="onFilterYesterday" class="{{ filterPreset === 'yesterday' ? 'pill active' : 'pill' }}" />
+          <Label text="7 Hari" tap="onFilter7Days" class="{{ filterPreset === '7days' ? 'pill active' : 'pill' }}" />
+          <Label text="Bulan Ini" tap="onFilterThisMonth" class="{{ filterPreset === 'thisMonth' ? 'pill active' : 'pill' }}" />
+        </StackLayout>
+      </ScrollView>
+    </StackLayout>
+
+    <!-- Sales List -->
+    <ListView row="2" items="{{ sales }}" itemTap="onSaleTap">
+      <ListView.itemTemplate>
+        <GridLayout columns="*, auto" rows="auto, auto" class="card-sm m-1 p-3" style="margin-left: 16; margin-right: 16;">
+          <!-- Invoice & Date -->
+          <StackLayout col="0">
+            <Label text="{{ invoice_number }}" class="text-sm font-bold text-primary" />
+            <Label text="{{ formattedDate }}" class="text-xs text-muted" />
+            <StackLayout orientation="horizontal" class="mt-1">
+              <Label text="{{ paymentLabel }}" class="badge badge-cyan" />
+              <Label text="{{ statusLabel }}" class="{{ statusBadge }}" style="margin-left: 4;" />
+            </StackLayout>
+          </StackLayout>
+
+          <!-- Total -->
+          <StackLayout col="1" horizontalAlignment="right" verticalAlignment="center">
+            <Label text="{{ formattedTotal }}" class="text-base font-extrabold text-emerald text-right" />
+            <Label text="{{ created_by }}" class="text-xs text-muted text-right" />
+          </StackLayout>
+        </GridLayout>
+      </ListView.itemTemplate>
+    </ListView>
+
+    <!-- Loading -->
+    <ActivityIndicator row="2" busy="{{ isLoading }}" visibility="{{ isLoading ? 'visible' : 'collapsed' }}" />
+
+    <!-- Empty -->
+    <StackLayout row="2" visibility="{{ isEmpty ? 'visible' : 'collapsed' }}" class="empty-state">
+      <Label text="0" class="empty-state-icon" style="font-weight: 300;" />
+      <Label text="Belum ada transaksi" class="empty-state-text" />
+    </StackLayout>
+  </GridLayout>
+</Page>

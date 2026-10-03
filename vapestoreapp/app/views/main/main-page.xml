@@ -1,0 +1,70 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  loaded="onLoaded"
+  actionBarHidden="true"
+  backgroundSpanUnderStatusBar="true"
+  class="bg-slate-950">
+
+  <GridLayout rows="*, auto">
+    <!-- Content Frame -->
+    <Frame row="0" id="contentFrame" defaultPage="views/pos/pos-page" />
+
+    <!-- Bottom Navigation Bar for KASIR (Hanya Kasir, Transaksi, dan Pendapatan) -->
+    <GridLayout row="1" columns="*, *, *" class="bottom-nav" rows="auto" visibility="{{ isKasir ? 'visible' : 'collapsed' }}">
+      <!-- POS / Kasir -->
+      <StackLayout col="0" tap="onNavPOS" class="p-1" horizontalAlignment="center" verticalAlignment="center">
+        <Image src="{{ activeTab === 'pos' ? '~/assets/cashier-active.png' : '~/assets/cashier.png' }}"
+          width="20" height="20" stretch="aspectFit" horizontalAlignment="center" verticalAlignment="center"
+          style="margin-bottom: 2;" />
+        <Label text="Kasir" class="{{ activeTab === 'pos' ? 'bottom-nav-item active' : 'bottom-nav-item' }}" />
+      </StackLayout>
+
+      <!-- Transactions -->
+      <StackLayout col="1" tap="onNavTransactions" class="p-1" horizontalAlignment="center" verticalAlignment="center">
+        <Label text="≡" class="{{ activeTab === 'transactions' ? 'bottom-nav-icon active' : 'bottom-nav-icon' }}" />
+        <Label text="Transaksi" class="{{ activeTab === 'transactions' ? 'bottom-nav-item active' : 'bottom-nav-item' }}" />
+      </StackLayout>
+
+      <!-- Pendapatan Harian -->
+      <StackLayout col="2" tap="onNavReports" class="p-1" horizontalAlignment="center" verticalAlignment="center">
+        <Label text="Rp" class="{{ activeTab === 'reports' ? 'bottom-nav-icon active' : 'bottom-nav-icon' }}" style="font-weight: 900;" />
+        <Label text="Pendapatan" class="{{ activeTab === 'reports' ? 'bottom-nav-item active' : 'bottom-nav-item' }}" />
+      </StackLayout>
+    </GridLayout>
+
+    <!-- Bottom Navigation Bar for ADMIN (5 Tabs: Kasir, Produk, Transaksi, Laporan, Menu) -->
+    <GridLayout row="1" columns="*, *, *, *, *" class="bottom-nav" rows="auto" visibility="{{ isAdmin ? 'visible' : 'collapsed' }}">
+      <!-- POS / Kasir -->
+      <StackLayout col="0" tap="onNavPOS" class="p-1" horizontalAlignment="center" verticalAlignment="center">
+        <Image src="{{ activeTab === 'pos' ? '~/assets/cashier-active.png' : '~/assets/cashier.png' }}"
+          width="20" height="20" stretch="aspectFit" horizontalAlignment="center" verticalAlignment="center"
+          style="margin-bottom: 2;" />
+        <Label text="Kasir" class="{{ activeTab === 'pos' ? 'bottom-nav-item active' : 'bottom-nav-item' }}" />
+      </StackLayout>
+
+      <!-- Products -->
+      <StackLayout col="1" tap="onNavProducts" class="p-1" horizontalAlignment="center" verticalAlignment="center">
+        <Label text="◈" class="{{ activeTab === 'products' ? 'bottom-nav-icon active' : 'bottom-nav-icon' }}" />
+        <Label text="Produk" class="{{ activeTab === 'products' ? 'bottom-nav-item active' : 'bottom-nav-item' }}" />
+      </StackLayout>
+
+      <!-- Transactions -->
+      <StackLayout col="2" tap="onNavTransactions" class="p-1" horizontalAlignment="center" verticalAlignment="center">
+        <Label text="≡" class="{{ activeTab === 'transactions' ? 'bottom-nav-icon active' : 'bottom-nav-icon' }}" />
+        <Label text="Transaksi" class="{{ activeTab === 'transactions' ? 'bottom-nav-item active' : 'bottom-nav-item' }}" />
+      </StackLayout>
+
+      <!-- Reports -->
+      <StackLayout col="3" tap="onNavReports" class="p-1" horizontalAlignment="center" verticalAlignment="center">
+        <Label text="▲" class="{{ activeTab === 'reports' ? 'bottom-nav-icon active' : 'bottom-nav-icon' }}" />
+        <Label text="Laporan" class="{{ activeTab === 'reports' ? 'bottom-nav-item active' : 'bottom-nav-item' }}" />
+      </StackLayout>
+
+      <!-- Menu/More -->
+      <StackLayout col="4" tap="onNavMenu" class="p-1" horizontalAlignment="center" verticalAlignment="center">
+        <Label text="☰" class="{{ activeTab === 'menu' ? 'bottom-nav-icon active' : 'bottom-nav-icon' }}" />
+        <Label text="Menu" class="{{ activeTab === 'menu' ? 'bottom-nav-item active' : 'bottom-nav-item' }}" />
+      </StackLayout>
+    </GridLayout>
+  </GridLayout>
+</Page>

@@ -128,7 +128,7 @@ export const ProductRepo = {
 
     // Pagination
     const page = Math.max(1, filter.page || 1);
-    const limit = Math.max(1, Math.min(100, filter.limit || 20));
+    const limit = Math.max(1, Math.min(1000, filter.limit || 20));
     const offset = (page - 1) * limit;
 
     const query = `

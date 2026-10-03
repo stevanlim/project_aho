@@ -1,0 +1,82 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  navigatingTo="onNavigatingTo"
+  class="bg-slate-950">
+
+  <ActionBar title="Detail Transaksi" class="bg-slate-900">
+    <NavigationButton text="" tap="onGoBack" android.systemIcon="ic_menu_back" />
+  </ActionBar>
+
+  <ScrollView>
+    <StackLayout class="p-4">
+      <ActivityIndicator busy="{{ isLoading }}" visibility="{{ isLoading ? 'visible' : 'collapsed' }}" class="mt-4" />
+
+      <!-- Receipt Card -->
+      <StackLayout class="receipt-container" visibility="{{ !isLoading ? 'visible' : 'collapsed' }}">
+        <!-- Store Header -->
+        <Label text="SS VAPE" class="receipt-header" />
+        <Label text="{{ storeAddress }}" class="receipt-text text-center" textWrap="true" />
+        <Label text="{{ storePhone }}" class="receipt-text text-center mb-2" />
+
+        <StackLayout style="height: 1; background-color: #e2e8f0; margin: 8 0;" />
+
+        <!-- Invoice Info -->
+        <Label text="{{ 'Invoice: ' + sale.invoice_number }}" class="receipt-text font-bold" />
+        <Label text="{{ 'Tanggal: ' + formattedDate }}" class="receipt-text" />
+        <Label text="{{ 'Kasir: ' + sale.created_by }}" class="receipt-text" />
+        <Label text="{{ 'Pembayaran: ' + paymentLabel }}" class="receipt-text" />
+
+        <StackLayout style="height: 1; background-color: #e2e8f0; margin: 8 0;" />
+
+        <!-- Items -->
+        <Label text="Daftar Belanja:" class="receipt-text font-bold mb-1" />
+        <Repeater items="{{ saleItems }}">
+          <Repeater.itemTemplate>
+            <GridLayout columns="*, auto" rows="auto, auto" class="mb-1">
+              <Label col="0" text="{{ product_name }}" class="receipt-text" textWrap="true" />
+              <Label col="1" text="{{ formattedSubtotal }}" class="receipt-text text-right" />
+              <Label col="0" row="1" text="{{ quantity + ' x ' + formattedUnitPrice }}" style="color: #94a3b8; font-size: 11;" />
+            </GridLayout>
+          </Repeater.itemTemplate>
+        </Repeater>
+
+        <StackLayout style="height: 1; background-color: #e2e8f0; margin: 8 0;" />
+
+        <!-- Totals -->
+        <GridLayout columns="*, auto" rows="auto" class="mb-1">
+          <Label col="0" text="Subtotal" class="receipt-text" />
+          <Label col="1" text="{{ formattedSubtotal }}" class="receipt-text" />
+        </GridLayout>
+        <GridLayout columns="*, auto" rows="auto" class="mb-1" visibility="{{ sale.discount > 0 ? 'visible' : 'collapsed' }}">
+          <Label col="0" text="Diskon" class="receipt-text" />
+          <Label col="1" text="{{ '- ' + formattedDiscount }}" style="color: #f43f5e; font-size: 13;" />
+        </GridLayout>
+        <GridLayout columns="*, auto" rows="auto" class="mb-1">
+          <Label col="0" text="TOTAL" class="receipt-text font-bold" style="font-size: 16;" />
+          <Label col="1" text="{{ formattedGrandTotal }}" class="receipt-text font-bold" style="font-size: 16;" />
+        </GridLayout>
+        <GridLayout columns="*, auto" rows="auto" class="mb-1">
+          <Label col="0" text="Bayar" class="receipt-text" />
+          <Label col="1" text="{{ formattedPaid }}" class="receipt-text" />
+        </GridLayout>
+        <GridLayout columns="*, auto" rows="auto">
+          <Label col="0" text="Kembalian" class="receipt-text font-bold" />
+          <Label col="1" text="{{ formattedChange }}" class="receipt-text font-bold" />
+        </GridLayout>
+
+        <StackLayout style="height: 1; background-color: #e2e8f0; margin: 8 0;" />
+
+        <!-- Footer -->
+        <Label text="{{ invoiceFooter }}" class="receipt-text text-center" textWrap="true" style="font-size: 11; color: #94a3b8;" />
+      </StackLayout>
+
+      <!-- Action Buttons -->
+      <StackLayout visibility="{{ !isLoading ? 'visible' : 'collapsed' }}" class="mt-4">
+        <Button text="CETAK STRUK" tap="onPrintReceipt" class="btn btn-emerald btn-block mb-2" style="font-weight: 700;" />
+        <Button text="SALIN / BAGIKAN STRUK" tap="onShareReceipt" class="btn btn-slate btn-block mb-2" style="font-weight: 700;" />
+        <Button text="HAPUS TRANSAKSI" tap="onDeleteSale"
+          class="btn btn-rose btn-block" style="font-weight: 700;"
+          visibility="{{ sale.status === 'completed' ? 'visible' : 'collapsed' }}" />
+      </StackLayout>
+    </StackLayout>
+  </ScrollView>
+</Page>
